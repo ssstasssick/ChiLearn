@@ -4,12 +4,16 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:ChiLearn"
-    Shell.FlyoutBehavior="Disabled"
-    Title="ChiLearn">
+    xmlns:view="clr-namespace:ChiLearn.View">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+
+    <TabBar>
+        <ShellContent
+            ContentTemplate="{DataTemplate view:MainPage}"
+            Icon="home.png"/>
+        <ShellContent
+            ContentTemplate="{DataTemplate view:LessonsPage}"
+            Icon="settings.png"/>
+    </TabBar>
 
 </Shell>
