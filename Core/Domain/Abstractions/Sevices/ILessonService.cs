@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Core.Domain.Abstractions.Sevices
 {
     public interface ILessonService
     {
-
+        List<Lesson> GetLessonsByIdWithWords(int lessonId);
     }
 }
