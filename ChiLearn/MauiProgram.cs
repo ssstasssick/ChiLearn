@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Core.Domain.Abstractions.Sevices;
+using Microsoft.Extensions.Logging;
 
 namespace ChiLearn
 {
@@ -16,7 +17,7 @@ namespace ChiLearn
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
