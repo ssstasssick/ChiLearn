@@ -75,6 +75,20 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
                 Select(_mapper.MapToDomain).ToList();
         }
 
+        public async Task<List<Word>> GetWordsByIds(IEnumerable<int> ids)
+        {
+            await _connection.Init();
+            var wordsModels = await _connection.Database
+                .Table<WordModel>()
+                .Where(w => ids.Contains(w.WordId))
+                .ToArrayAsync();
+
+            return wordsModels
+                .Select(_mapper.MapToDomain)
+                .ToList();
+           
+        }
+
         public Task<Word> Update(Word lesson)
         {
             throw new NotImplementedException();

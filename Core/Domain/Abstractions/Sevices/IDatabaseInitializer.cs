@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Persistence
+namespace Core.Domain.Abstractions.Sevices
 {
-    internal interface IDbDataInitializer
+    public interface IDatabaseInitializer
     {
-        Task SeedDataAsync();    
+        Task InitializeAsync();
     }
 }

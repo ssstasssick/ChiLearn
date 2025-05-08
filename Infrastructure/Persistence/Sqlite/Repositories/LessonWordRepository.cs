@@ -48,5 +48,19 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
             await _connection.Database.DeleteAsync(lessenId);
             return lessenId;
         }
+
+        public async Task<IEnumerable<int>> GetWordsIdsByLessonId(int lessonId)
+        {
+            await _connection.Init();
+            var words = await _connection.Database
+                .Table<LessonWordModel>()
+                .Where(l => l.LessonId.Equals(lessonId))
+                .ToListAsync();
+            var wordsIds = words
+                .Select(lw => lw.WordId)
+                .ToList();
+            return wordsIds;
+           
+        }
     }
 }

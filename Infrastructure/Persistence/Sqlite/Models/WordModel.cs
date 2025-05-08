@@ -12,6 +12,7 @@ namespace Infrastructure.Persistence.Sqlite.Models
     internal class WordModel
     {
         [PrimaryKey, AutoIncrement]
+        [CsvHelper.Configuration.Attributes.Ignore]
         public int WordId { get; set; }
         [Name("Chinese")]
         public string ChiWord { get; set; }
@@ -21,8 +22,11 @@ namespace Infrastructure.Persistence.Sqlite.Models
         public string EngWord { get; set; }
         [Name("Pinyin")]
         public string Pinyin { get; set; }
+        [CsvHelper.Configuration.Attributes.Ignore]
         public bool Learned { get; set; } = false;
+        [CsvHelper.Configuration.Attributes.Ignore]
         public int HskLevel { get; set; }
+        [CsvHelper.Configuration.Attributes.Ignore]
         public string? AudioPath { get; set; }
     }
 }

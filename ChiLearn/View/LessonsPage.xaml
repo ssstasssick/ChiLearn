@@ -4,10 +4,17 @@
              x:Class="ChiLearn.View.LessonsPage"
              Title="LessonsPage"
              Shell.NavBarIsVisible="False">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+                 Command="{Binding LoadLessonsCommand}">
+        <CollectionView ItemsSource="{Binding Lessons}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10">
+                        <Label Text="{Binding Title}" FontSize="Medium"/>
+                        <Label Text="{Binding Description}" FontSize="Small"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>

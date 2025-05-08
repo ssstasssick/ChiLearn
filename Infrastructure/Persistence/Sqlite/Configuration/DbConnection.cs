@@ -1,4 +1,6 @@
 ﻿using ChiLearn.Infrastructure;
+using Core.Domain.Abstractions.Sevices;
+using Infrastructure.Persistence.Sqlite.Models;
 using SQLite;
 
 namespace Infrastructure.Persistence.Sqlite.Configuration
@@ -7,7 +9,6 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
     {
         private SQLiteAsyncConnection? _database;
         private readonly InfrastuctureConfiguration _configuration;
-
         public DbConnection(InfrastuctureConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -30,11 +31,16 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
         {
             if (_database is not null)
             {
+                //_ = await _database.DeleteAllAsync<LessonWordModel>();
+                //_ = await _database.DeleteAllAsync<LessonModel>();
+                //_ = await _database.DeleteAllAsync<WordModel>();
+
                 return;
             }
 
             _database = new SQLiteAsyncConnection(GetDatabasePath(Constants.DatabaseFileName), Constants.Flags);
             await CreateTables();
+
         }
 
         private async Task CreateTables()
@@ -43,11 +49,10 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
             {
                 throw new NullReferenceException("Local DB connection is not initialized");
             }
-
-            //_ = await _database.CreateTableAsync<TransactionModel>();
-            //_ = await _database.CreateTableAsync<CategoryModel>();
-            //_ = await _database.CreateTableAsync<ProfileModel>();
-            //_ = await _database.CreateTableAsync<SettingsModel>();
+            
+            _ = await _database.CreateTableAsync<LessonModel>();
+            _ = await _database.CreateTableAsync<WordModel>();
+            _ = await _database.CreateTableAsync<LessonWordModel>();
         }
 
         private string GetDatabasePath(string filename)

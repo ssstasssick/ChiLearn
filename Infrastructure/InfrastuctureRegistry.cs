@@ -1,10 +1,12 @@
-﻿using Core.Domain.Entity;
+﻿using Core.Domain.Abstractions.Sevices;
+using Core.Domain.Entity;
 using Core.Persistence;
 using Infrastructure.Persistence.Abstractions.Internal;
 using Infrastructure.Persistence.Sqlite.Configuration;
 using Infrastructure.Persistence.Sqlite.Mappers;
 using Infrastructure.Persistence.Sqlite.Models;
 using Infrastructure.Persistence.Sqlite.Repositories;
+using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChiLearn.Infrastructure
@@ -16,7 +18,9 @@ namespace ChiLearn.Infrastructure
             return services
                 .RegisterPersistence(configuration)
                 .RegisterMappers()
-                .RegisterRepositories();
+                .RegisterRepositories()
+                .AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+                
         }
 
         private static IServiceCollection RegisterPersistence(this IServiceCollection services, InfrastuctureConfiguration configuration)
@@ -39,7 +43,9 @@ namespace ChiLearn.Infrastructure
             return services
                 .AddTransient<IWordRepository, WordRepository>()
                 .AddTransient<ILessonRepository, LessonRepository>()
-                .AddTransient<ILessonWordRepository, LessonWordRepository>();
+                .AddTransient<ILessonWordRepository, LessonWordRepository>()
+                .AddTransient<ICsvDataService, CsvFileService>()
+                .AddTransient<IDataBaseSeeder, DataBaseSeeder>();
         }
     }
 }

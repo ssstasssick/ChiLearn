@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Domain.SharedKernel
+namespace Core.Domain.Abstractions.Sevices
 {
-    public abstract class ValueObject;
+    public interface IDataBaseSeeder
+    {
+        Task SeedDatabase();
+    }
 }

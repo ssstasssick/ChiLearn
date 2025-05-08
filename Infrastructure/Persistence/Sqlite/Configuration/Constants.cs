@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Persistence.Sqlite.Configuration
 {
-    internal class Constants
+    public class Constants
     {
         public const string DatabaseFileName = "ChiLearnLocalDb.db3";
         public const SQLite.SQLiteOpenFlags Flags =

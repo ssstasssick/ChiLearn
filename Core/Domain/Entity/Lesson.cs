@@ -8,7 +8,7 @@
         public string? Description { get; set; }
         public bool CompletedTheory { get; set; }
         public bool CompletedPractice { get; set; }
-        public List<Word> Words { get; } = [];
+        public List<Word> Words { get; set; } = [];
         
         public Lesson() { }    
 

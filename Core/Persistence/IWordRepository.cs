@@ -10,5 +10,6 @@ namespace Core.Persistence
     public interface IWordRepository : IRepository<Word>
     {
         Task<List<Word>> GetWordsByHskLevel(int hslLevel);
+        Task<List<Word>> GetWordsByIds(IEnumerable<int> ids);
     }
 }

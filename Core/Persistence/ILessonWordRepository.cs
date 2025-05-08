@@ -10,6 +10,7 @@ namespace Core.Persistence
     public interface ILessonWordRepository
     {
         Task AddWordsToLesson(int lessonId, IEnumerable<int> wordIds);
+        Task<IEnumerable<int>> GetWordsIdsByLessonId(int lessonId);
         Task<int> Delete(int lessonId);
         Task<LessonWord> Create(LessonWord CreatedLessonWord);
     }

@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.Sqlite.Mappers
     {
         public Lesson MapToDomain(LessonModel infrastucture)
         {
-            return new Lesson
+            var lessonDomain = new Lesson
             {
                 LessonId = infrastucture.LessonId,
                 LessonNum = infrastucture.LessonNum,
@@ -17,6 +17,7 @@ namespace Infrastructure.Persistence.Sqlite.Mappers
                 CompletedPractice = infrastucture.CompletedPractice,
                 CompletedTheory = infrastucture.CompletedTheory
             };
+            return lessonDomain;
         }
 
         public LessonModel MapToModel(Lesson domain)

@@ -9,5 +9,6 @@ namespace Core.Domain.Abstractions.Sevices
 {
     public interface IWordService
     {
+
     }
 }

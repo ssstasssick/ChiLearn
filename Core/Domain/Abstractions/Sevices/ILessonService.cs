@@ -9,6 +9,8 @@ namespace Core.Domain.Abstractions.Sevices
 {
     public interface ILessonService
     {
-        List<Lesson> GetLessonsByIdWithWords(int lessonId);
+        Task<Lesson> GetLessonsById(int lessonId);
+        Task<List<Lesson>> GetAllLessons();
+
     }
 }

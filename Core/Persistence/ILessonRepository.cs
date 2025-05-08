@@ -9,8 +9,6 @@ namespace Core.Persistence
 {
     public interface ILessonRepository : IRepository<Lesson>
     {
-        
-      
 
     }
 }
