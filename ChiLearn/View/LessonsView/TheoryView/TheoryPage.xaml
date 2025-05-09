@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:swipe="clr-namespace:Microsoft.Maui.Controls;assembly=Microsoft.Maui.Controls"
+             x:Class="ChiLearn.View.LessonsView.TheoryView.TheoryPage"
+             xmlns:behaviors="clr-namespace:ChiLearn.Behaviors"
+             Title="Теория">
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!-- Прогресс-бар -->
+        <ProgressBar Grid.Row="0"
+             Progress="{Binding ProgressPercentage}"
+             Margin="20,10"
+             HeightRequest="10">
+            <ProgressBar.ProgressColor>
+                <Binding Path="ProgressPercentage" 
+                 Converter="{StaticResource ProgressColorConverter}"/>
+            </ProgressBar.ProgressColor>
+        </ProgressBar>
+
+        <CarouselView x:Name="carousel"
+                      Grid.Row="1"
+                      ItemsSource="{Binding Words}"
+                      Position="{Binding CurrentPosition, Mode=Default}"
+                      Loop="False"
+                      PeekAreaInsets="0"
+                      VerticalOptions="FillAndExpand">
+            
+            
+            <CarouselView.ItemTemplate>
+                <DataTemplate>
+
+                    <Grid Padding="20">
+
+                        <!-- Карточка слова -->
+                        <Frame CornerRadius="20"                                
+                               Padding="30"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               WidthRequest="300"
+                               HeightRequest="500">
+
+                            <StackLayout Spacing="20">
+                                <!-- Китайское слово -->
+                                <Label Text="{Binding ChiWord}" 
+                                       FontSize="36"
+                                       HorizontalOptions="Center"
+                                       FontAttributes="Bold"/>
+
+                                <!-- Пиньинь -->
+                                <Label Text="{Binding Pinyin}"
+                                       FontSize="24"
+                                       HorizontalOptions="Center"
+                                       TextColor="Gray"/>
+
+                                <!-- Переводы -->
+                                <BoxView HeightRequest="2" Color="LightGray"/>
+
+                                <Label Text="{Binding RuWord}"
+                                       FontSize="24"
+                                       HorizontalOptions="Center"/>
+
+                                <Label Text="{Binding EngWord}"
+                                       FontSize="20"
+                                       HorizontalOptions="Center"
+                                       TextColor="Gray"/>
+
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+
+        <!-- Кнопка завершения (видна только после прохождения) -->
+        <Button Grid.Row="2"
+                Text="Завершить урок"
+                IsVisible="{Binding AllWordsViewed}"
+                Command="{Binding FinishLessonCommand}"
+                VerticalOptions="End"
+                Margin="20"
+                CornerRadius="20"/>     
+    </Grid>
+
+</ContentPage>

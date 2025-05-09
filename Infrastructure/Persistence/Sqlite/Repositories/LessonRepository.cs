@@ -75,7 +75,15 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
 
         public async Task<Lesson> Update(Lesson entity)
         {
-            throw new NotImplementedException();
+            await _connection.Init();
+
+            var lessonModel = _mapper.MapToModel(entity);
+
+            await _connection.Database
+                .UpdateAsync(lessonModel);
+
+            return entity;
         }
+
     }
 }

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ChiLearn.ViewModel.Lessons"
+             x:Class="ChiLearn.View.LessonsPage"
+             Title="LessonsPage"
+             Shell.NavBarIsVisible="False">
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+             Command="{Binding LoadLessonsCommand}">
+        <CollectionView ItemsSource="{Binding GroupedLessons}"
+               IsGrouped="True">
+
+            <!-- Шаблон заголовка группы -->
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <StackLayout BackgroundColor="#f0f0f0" Padding="10">
+                        <Label Text="{Binding Key, StringFormat='HSK {0}'}" 
+                       FontSize="16"
+                       FontAttributes="Bold"
+                       TextColor="Black"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <!-- Шаблон урока -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10" Spacing="5">
+                        <Label Text="{Binding Title}" 
+                       FontSize="14"
+                       FontAttributes="Bold"/>
+                        <Label Text="{Binding Description}" 
+                       FontSize="12"
+                       TextColor="Gray"/>
+                        <Button Text="Перейти к уроку"
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LessonPageViewModel}}, Path=NavigateToDetailPageCommand}"
+                        CommandParameter="{Binding .}"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

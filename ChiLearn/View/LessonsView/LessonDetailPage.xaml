@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChiLearn.View.LessonDetailPage"
+             Title="LessonDetailPage">
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Label Text="{Binding SelectedLesson.Description}" 
+               FontSize="Medium"/>
+
+        <Button Text="Изучить теорию" 
+                Command="{Binding NavigateToTheoryCommand}"
+                BackgroundColor="{StaticResource Primary}"
+                TextColor="White"
+                HeightRequest="60"/>
+
+        <Button Text="Начать практику" 
+                Command="{Binding NavigateToPracticeCommand}"
+                BackgroundColor="{StaticResource Secondary}"
+                TextColor="White"
+                HeightRequest="60"/>
+    </VerticalStackLayout>
+</ContentPage>

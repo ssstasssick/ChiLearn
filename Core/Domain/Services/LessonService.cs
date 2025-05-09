@@ -16,10 +16,17 @@ namespace Core.Domain.Services
         private readonly ILessonWordRepository _lessonWordRepository;
         public LessonService(
             ILessonRepository lessonRepository,
-            IWordRepository wordRepository)
+            IWordRepository wordRepository,
+            ILessonWordRepository lessonWordRepository)
         {
             _lessonRepository = lessonRepository;
             _wordRepository = wordRepository;
+            _lessonWordRepository = lessonWordRepository;
+        }
+
+        public async Task UpdateLesson(Lesson updatedLesson)
+        {
+            await _lessonRepository.Update(updatedLesson);
         }
 
         public async Task<List<Lesson>> GetAllLessons()

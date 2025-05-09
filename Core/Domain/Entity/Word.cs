@@ -12,7 +12,6 @@ namespace Core.Domain.Entity
         public bool Learned { get;set; }// flag: 0 - not, 1 - learned
         public int HskLevel { get; set; }
         public string? AudioPath { get; set; }
-        public List<Lesson> Lessons { get; } = [];
         public Word() { }
         
     }

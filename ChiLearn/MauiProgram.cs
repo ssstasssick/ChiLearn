@@ -6,6 +6,9 @@ using ChiLearn.View;
 using ChiLearn.ViewModel.Lessons;
 using System.Diagnostics;
 using Infrastructure.Persistence.Sqlite.Configuration;
+using ChiLearn.View.LessonsView.TheoryView;
+using CommunityToolkit.Maui;
+using ChiLearn.ViewModel.Lessons.TheoryPart;
 
 namespace ChiLearn
 {
@@ -16,6 +19,7 @@ namespace ChiLearn
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -58,7 +62,9 @@ namespace ChiLearn
         private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
         {
             _ = mauiAppBuilder.Services
-                .AddTransient<LessonPageViewModel>();
+                .AddTransient<LessonPageViewModel>()
+                .AddTransient<LessonDetailViewModel>()
+                .AddTransient<TheoryViewModel>();
 
             return mauiAppBuilder;
         }
@@ -66,7 +72,10 @@ namespace ChiLearn
         private static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
         {
             _ = mauiAppBuilder.Services
-                .AddTransient<LessonsPage>();
+                .AddTransient<LessonsPage>()
+                .AddTransient<LessonDetailPage>()
+                .AddTransient<TheoryPage>();
+            
 
             return mauiAppBuilder;
         }
@@ -75,14 +84,12 @@ namespace ChiLearn
         {
             try
             {
-
                 using var scope = services.CreateScope();
                 var initializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
                 await initializer.InitializeAsync();
             }
             catch (Exception ex)
             {
-                // Можно добавить более сложную обработку ошибок
                 Debug.WriteLine($"Database initialization failed: {ex}");
 #if DEBUG
                 await Application.Current.MainPage.DisplayAlert("Error", $"DB init failed: {ex.Message}", "OK");
