@@ -23,6 +23,19 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
             _connection = connection;
             _mapper = mapper;
         }
+
+        public async Task<bool> AnyAsync()
+        {
+            await _connection.Init();
+
+            var exists = await _connection.Database
+                .Table<WordModel>()
+                .Take(1)
+                .CountAsync();
+
+            return exists > 0;
+        }
+
         public async Task<Word> Create(Word lesson)
         {
             await _connection.Init();

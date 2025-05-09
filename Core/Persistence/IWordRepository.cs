@@ -11,5 +11,6 @@ namespace Core.Persistence
     {
         Task<List<Word>> GetWordsByHskLevel(int hslLevel);
         Task<List<Word>> GetWordsByIds(IEnumerable<int> ids);
+        Task<bool> AnyAsync();
     }
 }

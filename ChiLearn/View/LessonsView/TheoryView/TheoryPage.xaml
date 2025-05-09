@@ -65,7 +65,16 @@
                                        HorizontalOptions="Center"
                                        TextColor="Gray"/>
 
+                                <Button Text="🔊"
+                                        FontSize="50"
+                                        Command="{Binding BindingContext.PlayAudioCommand, Source={x:Reference carousel}}"
+                                        CommandParameter="{Binding}"
+                                        HorizontalOptions="Center"
+                                        CornerRadius="100"
+                                        Margin="10"
+                                        Padding="30,30"/>
                             </StackLayout>
+
                         </Frame>
                     </Grid>
                 </DataTemplate>

@@ -1,6 +1,7 @@
 ﻿using ChiLearn.Abstractions;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
+using Plugin.Maui.Audio;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -9,6 +10,7 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
     public class TheoryViewModel : BaseNotifyObject
     {
         private readonly ILessonService _lessonService;
+        private readonly IAudioManager _audioManager;
 
         public ObservableCollection<Word> Words { get; } = new();
 
@@ -27,6 +29,7 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
         }
 
         public ICommand FinishLessonCommand { get; }
+        public ICommand PlayAudioCommand { get; }
 
         private Lesson _tLesson;
         public Lesson TLesson
@@ -58,10 +61,14 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
 
         public bool AllWordsViewed => ProgressPercentage.Equals(1);
 
-        public TheoryViewModel(ILessonService lessonService)
+        public TheoryViewModel(ILessonService lessonService,
+            IAudioManager audioManager)
         {
             _lessonService = lessonService;
+            _audioManager = audioManager;
+
             FinishLessonCommand = new Command(async () => await FinishLesson());
+            PlayAudioCommand = new Command<Word>(async (selectedWord) => await PlayAudio(selectedWord));
         }
 
         internal void Initialize(Lesson lesson)
@@ -95,6 +102,23 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
                 ProgressPercentage = SavePosition;
             }
                 
+        }
+
+        private async Task PlayAudio(Word selectedWord)
+        {
+            try
+            {
+                var audioPath = Path.Combine("Audio", selectedWord.AudioPath) + ".mp3";
+
+                using var stream = await FileSystem.OpenAppPackageFileAsync(audioPath);
+                var player = AudioManager.Current.CreatePlayer(stream);
+                player.Play();
+
+            }
+            catch (FileNotFoundException)
+            {
+                await Application.Current.MainPage.DisplayAlert("Error",$"Файл не найден: Audio/{selectedWord.AudioPath}", "Ok");
+            }
         }
     }
 }

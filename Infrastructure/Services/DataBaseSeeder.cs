@@ -7,6 +7,7 @@ using Infrastructure.Persistence.Sqlite.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,7 +46,7 @@ namespace Infrastructure.Services
 
         private async Task SeedWords(int hskLevel)
         {
-            if (await _wordRepository.GetAll() is null)
+            if (await _wordRepository.AnyAsync() is false)
             {
                 var words = _csvReaderService.GetWordsFromCsv(hskLevel);
 
@@ -54,7 +55,12 @@ namespace Infrastructure.Services
                     throw new InvalidOperationException($"No words found in CSV for HSK level {hskLevel}");
                 }
 
-                words.ForEach(w => w.HskLevel = hskLevel);
+                words.ForEach(w =>
+                {
+                    w.HskLevel = hskLevel;
+                    var audioFileName = $"{ConverterChiWordToUnicode.ConvertToUnicode(w.ChiWord)}";
+                    w.AudioPath = audioFileName;
+                });
 
                 foreach (var word in words)
                 {
@@ -65,7 +71,7 @@ namespace Infrastructure.Services
 
         private async Task SeedLessons(int wordsInLesson)
         {
-            if (await _lessonRepository.GetAll() is null)
+            if (await _lessonRepository.AnyAsync() is false)
             {
                 for (int hskLevel = 1; hskLevel <= Constants.HskCsvFileName.Count; hskLevel++)
                 {

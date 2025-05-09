@@ -9,5 +9,6 @@ namespace Core.Persistence
 {
     public interface ILessonRepository : IRepository<Lesson>
     {
+        Task<bool> AnyAsync();
     }
 }

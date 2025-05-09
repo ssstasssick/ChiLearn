@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 		<MauiAsset Include="Resources\Raw\*.csv" />
+		<MauiAsset Include="Resources\Raw\Audio\*.mp3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +67,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Plugin.Maui.Audio" Version="3.1.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
 	</ItemGroup>
@@ -104,10 +106,5 @@
 	  <Folder Include="View\LessonsView\PracticeView\" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <MauiAsset Update="Resources\Raw\Hsk-1-Csv.csv">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </MauiAsset>
-	</ItemGroup>
 
 </Project>

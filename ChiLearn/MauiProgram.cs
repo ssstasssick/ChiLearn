@@ -9,6 +9,8 @@ using Infrastructure.Persistence.Sqlite.Configuration;
 using ChiLearn.View.LessonsView.TheoryView;
 using CommunityToolkit.Maui;
 using ChiLearn.ViewModel.Lessons.TheoryPart;
+using Plugin.Maui.Audio;
+using Microsoft.Maui.Storage;
 
 namespace ChiLearn
 {
@@ -27,9 +29,9 @@ namespace ChiLearn
                 })
                 .RegisterAppService()
                 .RegisterViewModels()
-                .RegisterViews();          
-            
-            
+                .RegisterViews();
+
+
 
 
 #if DEBUG
@@ -47,6 +49,7 @@ namespace ChiLearn
                 .RegistryCoreServices();
 
             InitializeDatabase(builder.Build().Services).ConfigureAwait(false);
+
             CopyCsvFilesToAppData().ConfigureAwait(false);
 
             return builder.Build();
@@ -55,7 +58,8 @@ namespace ChiLearn
         private static MauiAppBuilder RegisterAppService(this MauiAppBuilder mauiAppBuilder)
         {
             _ = mauiAppBuilder.Services
-                .AddSingleton<AppShell>();
+                .AddSingleton<AppShell>()
+                .AddSingleton(AudioManager.Current); ;
             return mauiAppBuilder;
         }
 
@@ -75,7 +79,7 @@ namespace ChiLearn
                 .AddTransient<LessonsPage>()
                 .AddTransient<LessonDetailPage>()
                 .AddTransient<TheoryPage>();
-            
+
 
             return mauiAppBuilder;
         }
@@ -105,15 +109,17 @@ namespace ChiLearn
             foreach (var (hskLevel, fileName) in Constants.HskCsvFileName)
             {
                 var targetPath = Path.Combine(targetDir, fileName);
-                if (File.Exists(targetPath))
+                if (!File.Exists(targetPath))
                 {
-                    File.Delete(targetPath);
                     using var sourceStream = await FileSystem.OpenAppPackageFileAsync(fileName);
                     using var targetStream = File.Create(targetPath);
                     sourceStream.CopyTo(targetStream);
                 }
             }
         }
+
+        
+
 
 
     }
