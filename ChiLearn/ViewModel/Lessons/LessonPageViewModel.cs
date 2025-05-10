@@ -61,7 +61,8 @@ namespace ChiLearn.ViewModel.Lessons
             try
             {
                 Lessons = await _lessonService.GetAllLessons();
-                var groupedLessons = Lessons
+                var updatedLessons = ApplyLessonAvailability(Lessons);
+                var groupedLessons = updatedLessons
                     .OrderBy(g => g.HskLevel)
                     .ThenBy(l => l.LessonNum)  // Используем ThenBy вместо второго OrderBy
                     .GroupBy(l => l.HskLevel);
@@ -97,6 +98,29 @@ namespace ChiLearn.ViewModel.Lessons
                 { "LessonId", lesson.LessonId }
             };
             await Shell.Current.GoToAsync("LessonDetailPage", parameters);
+        }
+
+        private List<Lesson> ApplyLessonAvailability(List<Lesson> lessons)
+        {
+            lessons = lessons.OrderBy(l => l.LessonNum).ToList();
+
+            bool allowNext = true;
+
+            foreach (var lesson in lessons)
+            {
+                if (allowNext)
+                {
+                    lesson.IsAvailable = true;
+                }
+                else
+                {
+                    lesson.IsAvailable = false;
+                }
+
+                allowNext = lesson.CompletedTheory && lesson.CompletedPractice;
+            }
+
+            return lessons;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChiLearn.ViewModel.Lessons.PracricePart
 {
-    class PracticeViewModel
+    class PracticeViewModel 
     {
     }
 }

@@ -14,11 +14,13 @@
              HeightRequest="10">
             <ProgressBar.ProgressColor>
                 <Binding Path="ProgressPercentage" 
+                     
                  Converter="{StaticResource ProgressColorConverter}"/>
             </ProgressBar.ProgressColor>
         </ProgressBar>
 
         <CarouselView x:Name="carousel"
+                      
                       Grid.Row="1"
                       ItemsSource="{Binding Words}"
                       Position="{Binding CurrentPosition, Mode=Default}"
@@ -43,7 +45,7 @@
                             <StackLayout Spacing="20">
                                 <!-- Китайское слово -->
                                 <Label Text="{Binding ChiWord}" 
-                                       FontSize="36"
+                                       FontSize="100"
                                        HorizontalOptions="Center"
                                        FontAttributes="Bold"/>
 
@@ -60,10 +62,10 @@
                                        FontSize="24"
                                        HorizontalOptions="Center"/>
 
-                                <Label Text="{Binding EngWord}"
+                                <!--<Label Text="{Binding EngWord}"
                                        FontSize="20"
                                        HorizontalOptions="Center"
-                                       TextColor="Gray"/>
+                                       TextColor="Gray"/>-->
 
                                 <Button Text="🔊"
                                         FontSize="50"
@@ -72,7 +74,7 @@
                                         HorizontalOptions="Center"
                                         CornerRadius="100"
                                         Margin="10"
-                                        Padding="30,30"/>
+                                        Padding="20,20"/>
                             </StackLayout>
 
                         </Frame>

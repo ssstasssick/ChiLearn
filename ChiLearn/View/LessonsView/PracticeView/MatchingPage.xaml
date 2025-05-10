@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:ChiLearn.View.LessonsView.PracticeView"
+             x:Class="ChiLearn.View.LessonsView.PracticeView.MatchingPage"
+             x:Name="MatchingPageName"
+             Title="Сопоставление слов">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <Label Text="Сопоставьте иероглифы с переводами"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Список слов и выпадающих списков -->
+            <CollectionView ItemsSource="{Binding Matches}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*, 2*" Padding="5">
+                            <!-- Китайское слово -->
+                            <Label Text="{Binding ChiWord}"
+                                   FontSize="18"
+                                   VerticalOptions="Center" />
+
+                            <!-- Выбор русского перевода -->
+                            <Picker Grid.Column="1"
+                                    Title="Выберите перевод"
+                                    ItemsSource="{Binding Source={x:Reference MatchingPageName}, Path=BindingContext.RussianWords}"
+                                    SelectedItem="{Binding SelectedRu, Mode=TwoWay}" />
+
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Кнопка проверки -->
+            <Button Text="Проверить"
+                    Command="{Binding SubmitMatchingCommand}"
+                    BackgroundColor="DarkBlue"
+                    TextColor="White"
+                    HeightRequest="50"
+                    IsVisible="{Binding ShowCheck}"
+                    CornerRadius="12" />
+
+            <!-- Показать при ошибках -->
+            <StackLayout IsVisible="{Binding ShowRetry}" Spacing="10">
+                <Label Text="Есть ошибки. Хотите попробовать снова?" 
+                       TextColor="Red"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+                <Button Text="Попробовать снова"
+                        Command="{Binding RetryCommand}"
+                        BackgroundColor="OrangeRed"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="12" />
+                <Button Text="Вернуться к теории"
+                        Command="{Binding GoToTheoryCommand}"
+                        BackgroundColor="Gray"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="12" />
+                <Button Text="Показать ошибки"
+                        IsVisible="{Binding ShowRetry}"
+                        Command="{Binding OnShowMistakesCommand}" />
+
+                <CollectionView ItemsSource="{Binding Mistakes}"
+                IsVisible="{Binding ShowMistakes}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding}" TextColor="Red" FontAttributes="Italic" />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+
+            <!-- Показать при успехе -->
+            <StackLayout IsVisible="{Binding ShowContinue}" Spacing="10">
+                <Label Text="Отлично! Все слова сопоставлены верно 🎉"
+                       TextColor="Green"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+                <Button Text="Перейти к произношению"
+                        Command="{Binding ContinueToPronunciationCommand}"
+                        BackgroundColor="Green"
+                        TextColor="White"
+                        HeightRequest="50"
+                        CornerRadius="12" />
+            </StackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

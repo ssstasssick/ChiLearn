@@ -1,4 +1,5 @@
 ﻿using ChiLearn.View;
+using ChiLearn.View.LessonsView.PracticeView;
 using ChiLearn.View.LessonsView.TheoryView;
 
 namespace ChiLearn
@@ -11,6 +12,7 @@ namespace ChiLearn
 
             Routing.RegisterRoute("LessonDetailPage", typeof(LessonDetailPage));
             Routing.RegisterRoute("TheoryPage", typeof(TheoryPage));
+            Routing.RegisterRoute("MatchingPage", typeof(MatchingPage));
         }
     }
 }

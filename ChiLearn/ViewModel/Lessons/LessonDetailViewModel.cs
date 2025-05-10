@@ -25,6 +25,7 @@ namespace ChiLearn.ViewModel.Lessons
         #region Commands
         public ICommand GoBackCommand { get; }
         public ICommand NavigateToTheoryCommand { get; }
+        public ICommand NavigateToPracticeCommand { get; }
         #endregion
 
         private readonly ILessonService _lessonService;
@@ -35,6 +36,7 @@ namespace ChiLearn.ViewModel.Lessons
 
             #region InitCommands
             NavigateToTheoryCommand = new Command(async () => await NavigateToTheoryPage());
+            NavigateToPracticeCommand = new Command(async () => await NavigateToPracticePage());
             #endregion
 
         }
@@ -62,6 +64,22 @@ namespace ChiLearn.ViewModel.Lessons
                 await Shell.Current.GoToAsync("TheoryPage", parameters);
             }
             catch(Exception ex)
+            {
+                Debug.WriteLine($"{ex.Message}");
+            }
+        }
+
+        private async Task NavigateToPracticePage()
+        {
+            try
+            {
+                var parameters = new Dictionary<string, object>
+                {
+                {"SelectedLesson", SelectedLesson}
+                };
+                await Shell.Current.GoToAsync("MatchingPage", parameters);
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine($"{ex.Message}");
             }

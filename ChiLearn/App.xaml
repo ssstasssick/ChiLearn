@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ChiLearn"
+             xmlns:behaviors="clr-namespace:ChiLearn.Behaviors"
              xmlns:converters="clr-namespace:ChiLearn.Models"
              x:Class="ChiLearn.App">
     <Application.Resources>
@@ -9,9 +10,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-                <ResourceDictionary><converters:ProgressToColorConverter x:Key="ProgressToColorConverter"/></ResourceDictionary>
                 <ResourceDictionary>
                     <converters:SwipeDirectionConverter x:Key="SwipeDirectionConverter"/>
+                    <behaviors:BoolToTextConverter x:Key="BoolToTextConverter" />
+                    <behaviors:BoolToColorConverter x:Key="BoolToColorConverter" />
+                    <behaviors:StatusTextConverter x:Key="StatusTextConverter" />
+                    <behaviors:ProgressToColorConverter x:Key="ProgressColorConverter"/>
+                    <behaviors:MatchingResultToColorConverter x:Key="MatchingResultToColorConverter" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

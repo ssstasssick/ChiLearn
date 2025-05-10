@@ -1,41 +1,55 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:ChiLearn.ViewModel.Lessons"
              x:Class="ChiLearn.View.LessonsPage"
              Title="LessonsPage"
              Shell.NavBarIsVisible="False">
-    <RefreshView IsRefreshing="{Binding IsLoading}"
-             Command="{Binding LoadLessonsCommand}">
-        <CollectionView ItemsSource="{Binding GroupedLessons}"
-               IsGrouped="True">
 
-            <!-- Шаблон заголовка группы -->
+    <RefreshView IsRefreshing="{Binding IsLoading}"
+                 Command="{Binding LoadLessonsCommand}">
+        <CollectionView ItemsSource="{Binding GroupedLessons}"
+                        IsGrouped="True"
+                        Margin="10">
+
+            <!-- Заголовок группы (HSK уровень) -->
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate>
-                    <StackLayout BackgroundColor="#f0f0f0" Padding="10">
-                        <Label Text="{Binding Key, StringFormat='HSK {0}'}" 
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="Black"/>
-                    </StackLayout>
+                    <Frame BackgroundColor="#e0e0e0" CornerRadius="0" Padding="10" Margin="0,10,0,5" HasShadow="False">
+                        <Label Text="{Binding Key, StringFormat='HSK {0}'}"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#333"
+                               HorizontalTextAlignment="Center"/>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.GroupHeaderTemplate>
 
-            <!-- Шаблон урока -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10" Spacing="5">
-                        <Label Text="{Binding Title}" 
-                       FontSize="14"
-                       FontAttributes="Bold"/>
-                        <Label Text="{Binding Description}" 
-                       FontSize="12"
-                       TextColor="Gray"/>
-                        <Button Text="Перейти к уроку"
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LessonPageViewModel}}, Path=NavigateToDetailPageCommand}"
-                        CommandParameter="{Binding .}"/>
-                    </StackLayout>
+                    <Frame CornerRadius="15"
+                           Padding="15"
+                           Margin="0,5"
+                           BackgroundColor="White"
+                           HasShadow="True">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="{Binding LessonNum, StringFormat='Урок {0}'}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#222"/>
+
+                            <Label Text="{Binding Description}"
+                                   FontSize="13"
+                                   TextColor="#777"/>
+
+                            <Button Text="{Binding IsAvailable, Converter={StaticResource BoolToTextConverter}}"
+                                    IsEnabled="{Binding IsAvailable}"
+                                    BackgroundColor="{Binding IsAvailable, Converter={StaticResource BoolToColorConverter}}"
+                                    TextColor="White"
+                                    CornerRadius="10"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LessonPageViewModel}}, Path=NavigateToDetailPageCommand}"
+                                    CommandParameter="{Binding .}"/>
+                        </VerticalStackLayout>
+                    </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

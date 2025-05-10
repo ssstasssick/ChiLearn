@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace ChiLearn.Models
+namespace ChiLearn.Behaviors
 {
     public class ProgressToColorConverter : IValueConverter
     {

@@ -1,22 +1,48 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ChiLearn.ViewModel.Lessons"
              x:Class="ChiLearn.View.LessonDetailPage"
-             Title="LessonDetailPage">
-    <VerticalStackLayout Padding="20" Spacing="20">
-        <Label Text="{Binding SelectedLesson.Description}" 
-               FontSize="Medium"/>
+             Title="{Binding SelectedLesson.LessonNum, StringFormat='Урок {0}'}">
 
-        <Button Text="Изучить теорию" 
-                Command="{Binding NavigateToTheoryCommand}"
-                BackgroundColor="{StaticResource Primary}"
-                TextColor="White"
-                HeightRequest="60"/>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
 
-        <Button Text="Начать практику" 
-                Command="{Binding NavigateToPracticeCommand}"
-                BackgroundColor="{StaticResource Secondary}"
-                TextColor="White"
-                HeightRequest="60"/>
-    </VerticalStackLayout>
+            <!-- Описание урока -->
+            <Frame BackgroundColor="#f9f9f9" CornerRadius="12" Padding="15" HasShadow="True">
+                <VerticalStackLayout>
+                    <Label Text="Описание" FontSize="18" FontAttributes="Bold" />
+                    <Label Text="{Binding SelectedLesson.Description}" FontSize="14" TextColor="Gray"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Кнопка "Изучить правило" -->
+            <Button Text="📘 Изучить слова"
+                    Command="{Binding NavigateToTheoryCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    HeightRequest="55"
+                    CornerRadius="12"/>
+
+            <!-- Статус выполнения теории -->
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="Статус теории:" FontSize="14"/>
+                <Label Text="{Binding SelectedLesson.CompletedTheory ,Converter={StaticResource StatusTextConverter}}"
+                       FontAttributes="Bold"
+                       TextColor="{Binding SelectedLesson.CompletedTheory, Converter={StaticResource BoolToColorConverter}}" />
+            </HorizontalStackLayout>
+
+            <!-- Кнопка "Начать практику" -->
+            <Button Text="📝 Начать практику"
+                    Command="{Binding NavigateToPracticeCommand}"
+                    BackgroundColor="{Binding SelectedLesson.CompletedTheory,
+                          Converter={StaticResource BoolToColorConverter},
+                          ConverterParameter='#2196F3;#B0BEC5'}"
+                    TextColor="White"
+                    HeightRequest="55"
+                    CornerRadius="12"
+                    IsEnabled="{Binding SelectedLesson.CompletedTheory}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

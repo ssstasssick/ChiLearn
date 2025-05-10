@@ -9,6 +9,8 @@
         public bool CompletedTheory { get; set; }
         public bool CompletedPractice { get; set; }
         public List<Word> Words { get; set; } = [];
+
+        public bool IsAvailable { get; set; } = false;
         
         public Lesson() { }    
 
