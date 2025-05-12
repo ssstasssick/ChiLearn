@@ -2,6 +2,7 @@
 using ChiLearn.View.LessonsView;
 using ChiLearn.View.LessonsView.PracticeView;
 using ChiLearn.View.LessonsView.TheoryView;
+using ChiLearn.View.Notebook;
 
 
 namespace ChiLearn
@@ -11,7 +12,9 @@ namespace ChiLearn
         public AppShell()
         {
             InitializeComponent();
-            //Routing.RegisterRoute("LessonPage", typeof(LessonsPage));
+            Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+            Routing.RegisterRoute("NotebookPage", typeof(NotebookPage));
+            Routing.RegisterRoute("LessonPage", typeof(LessonsPage));
             Routing.RegisterRoute("LessonDetailPage", typeof(LessonDetailPage));
             Routing.RegisterRoute("TheoryPage", typeof(TheoryPage));
             Routing.RegisterRoute("MatchingPage", typeof(MatchingPage));

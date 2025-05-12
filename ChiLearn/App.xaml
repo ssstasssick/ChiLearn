@@ -11,7 +11,6 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
                 <ResourceDictionary>
-                    <converters:SwipeDirectionConverter x:Key="SwipeDirectionConverter"/>
                     <behaviors:BoolToTextConverter x:Key="BoolToTextConverter" />
                     <behaviors:BoolToColorConverter x:Key="BoolToColorConverter" />
                     <behaviors:StatusTextConverter x:Key="StatusTextConverter" />

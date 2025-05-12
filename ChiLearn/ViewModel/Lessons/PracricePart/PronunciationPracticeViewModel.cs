@@ -13,6 +13,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
 {
     public class PronunciationPracticeViewModel : BaseNotifyObject, IDisposable
     {
+        private int NEED_TO_WIN = 3;
         private readonly MauiAudioRecorder _recorder;
         private IAudioPlayer? _audioPlayer;
         private bool _disposed;
@@ -147,46 +148,48 @@ namespace ChiLearn.View.LessonsView.PracticeView
 
                 Status = "Распознавание...";
                 using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
-
                 var sentences = await _speechService.TranscribeAndParseAsync(filePath);
 
-                // Предположим, что мы должны проверить, правильно ли произнесено слово
                 var recognizedSentence = sentences.FirstOrDefault();
-                if (recognizedSentence != null && recognizedSentence.s.Equals(SelectedWord.ChiWord, StringComparison.OrdinalIgnoreCase))
+                if (recognizedSentence != null)
                 {
-                    Status = "Правильно! Переход к следующему слову.";
+                    string recognizedText = recognizedSentence.s;
+                    Status = $"Вы сказали: {recognizedText}";
 
+                    // Проверка: хотя бы один иероглиф совпал
+                    bool matched = SelectedWord.ChiWord.Any(c => recognizedText.Contains(c));
 
-                    Words.Remove(SelectedWord);
-                    _correctAnswersCount++;
-
-                    // Переход к следующему слову, если это последнее слово - сбросить на первое
-                    _currentIndex = (_currentIndex + 1) % Words.Count;
-                    SelectedWord = Words[_currentIndex];
-
-                    if (_correctAnswersCount >= Words.Count / 2)
+                    if (matched)
                     {
-                        CompletedPractice = CurrentLesson.CompletedPractice = true; // Устанавливаем, что практика завершена
-                        Status = "Практика завершена!";
-                    }
+                        _correctAnswersCount++;
+                        Words.Remove(SelectedWord);
 
-                    // Переход к следующему слову, если это последнее слово - сбросить на первое
-                    if (Words.Count > 0)
-                    {
-                        _currentIndex = (_currentIndex + 1) % Words.Count;
-                        SelectedWord = Words[_currentIndex];
+                        if (Words.Count > 0)
+                        {
+                            _currentIndex = _currentIndex % Words.Count;
+                            SelectedWord = Words[_currentIndex];
+                            Progress = _correctAnswersCount / NEED_TO_WIN;
+                            Status = "Правильно! Переход к следующему слову.";
+                        }
+                        else
+                        {
+                            Status = "Все слова выполнены!";
+                        }
+
+                        if (_correctAnswersCount >= NEED_TO_WIN)
+                        {
+                            CompletedPractice = CurrentLesson.CompletedPractice = true;
+                            Status = "Практика завершена!";
+                        }
                     }
                     else
                     {
-                        Status = "Все слова выполнены!";
+                        Status = $"Вы сказали: {recognizedText}. Повторите снова.";
                     }
-
-                    // Обновляем прогресс
-                    Progress = (_currentIndex + 1) / (double)Words.Count;
                 }
                 else
                 {
-                    Status = $"Вы сказали: {recognizedSentence.s}. Повторите снова.";
+                    Status = "Не удалось распознать речь. Попробуйте снова.";
                 }
             }
             catch (Exception ex)
@@ -194,6 +197,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
                 Status = $"Ошибка: {ex.Message}";
             }
         }
+
 
         public async Task<string> CopyRecordingToAppDataDirectoryAsync(string sourceFilePath)
         {
@@ -247,11 +251,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
         {
             try
             {
-                var parameters = new Dictionary<string, object>
-                {
-                {"SelectedLesson", CurrentLesson}
-                };
-                await Shell.Current.GoToAsync("TheoryPage", parameters);
+                await Shell.Current.GoToAsync("LessonPage");
             }
             catch (Exception ex)
             {

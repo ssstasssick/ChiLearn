@@ -44,5 +44,25 @@ namespace Core.Domain.Services
             return lessonById;
 
         }
+
+        public async Task<Lesson?> GetLastCompletedLessonAsync()
+        {
+            var allLessons = await _lessonRepository.GetAll();
+
+            var completedLesson = allLessons
+                .Where(l => l.CompletedTheory && l.CompletedPractice)
+                .OrderByDescending(l => l.LessonNum)
+                .FirstOrDefault();
+
+            return completedLesson;
+        }
+
+        public async Task<int> GetCountOfLessonsByHskLevel(int hskLvl)
+        {
+            var allLessons = await _lessonRepository.GetAll();
+            return allLessons
+                .Where(all => all.HskLevel.Equals(hskLvl))
+                .Count();
+        }
     }
 }

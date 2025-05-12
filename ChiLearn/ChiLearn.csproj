@@ -104,10 +104,14 @@
 	  <MauiXaml Update="View\LessonsView\TheoryView\TheoryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\Notebook\NotebookPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Constants\" />
+	  <Folder Include="ViewModel\Notebook\" />
 	</ItemGroup>
 
 

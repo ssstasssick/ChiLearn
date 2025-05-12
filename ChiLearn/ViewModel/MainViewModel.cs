@@ -1,0 +1,68 @@
+﻿using ChiLearn.Abstractions;
+using Core.Domain.Abstractions.Sevices;
+using Core.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChiLearn.ViewModel
+{
+    public class MainViewModel : BaseNotifyObject
+    {
+        private readonly ILessonService _lessonService;
+
+        private int _hskLevel;
+        private double _percentCompletedLevels;
+        private double _progressBarPercent;
+        private int _numOfLastLesson;
+
+        public int HskLevel
+        {
+            get => _hskLevel;
+            set
+            {
+                SetProperty(ref _hskLevel, value);
+            }
+        }
+
+        public double ProgressBarPercent
+        {
+            get => _progressBarPercent;
+            set => SetProperty(ref _progressBarPercent, value);
+        }
+
+        public double PercentCompletedLevels
+        {
+            get => _percentCompletedLevels;
+            set => SetProperty(ref _percentCompletedLevels, value);
+        }
+
+        public int NumOfLastLesson
+        {
+            get => _numOfLastLesson;
+            set => SetProperty(ref _numOfLastLesson, value);
+        }
+
+
+
+        public MainViewModel(ILessonService lessonService)
+        {
+            _lessonService = lessonService;
+            _ = InitiazeValues();
+        }
+
+        private async Task InitiazeValues()
+        {
+            var lastLesson =  await _lessonService.GetLastCompletedLessonAsync();
+            HskLevel = lastLesson.HskLevel ?? 1;
+            NumOfLastLesson = lastLesson.LessonNum;
+            var l = await _lessonService.GetCountOfLessonsByHskLevel(HskLevel);
+            PercentCompletedLevels = (double)NumOfLastLesson / (await _lessonService.GetCountOfLessonsByHskLevel(HskLevel));
+            ProgressBarPercent = Double.Round(PercentCompletedLevels * 100);
+           
+
+        }
+    }
+}

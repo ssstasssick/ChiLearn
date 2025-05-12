@@ -31,24 +31,45 @@
                            Margin="0,5"
                            BackgroundColor="White"
                            HasShadow="True">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="{Binding LessonNum, StringFormat='Урок {0}'}"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   TextColor="#222"/>
+                        <Grid>
+                            <!-- Галочка справа сверху -->
+                            <Frame Padding="0"                                   
+                                   WidthRequest="24"
+                                   HeightRequest="24"
+                                   CornerRadius="12"
+                                   BackgroundColor="Green"
+                                   IsVisible="{Binding CompletedPractice}"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="Start"
+                                   HasShadow="False">
+                                <Label Text="✔"
+                                       FontSize="14"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       TextColor="White"
+                                       FontAttributes="Bold"/>
+                            </Frame>
 
-                            <Label Text="{Binding Description}"
-                                   FontSize="13"
-                                   TextColor="#777"/>
+                            <!-- Основной контент -->
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding LessonNum, StringFormat='Урок {0}'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="#222"/>
 
-                            <Button Text="{Binding IsAvailable, Converter={StaticResource BoolToTextConverter}}"
-                                    IsEnabled="{Binding IsAvailable}"
-                                    BackgroundColor="{Binding IsAvailable, Converter={StaticResource BoolToColorConverter}}"
-                                    TextColor="White"
-                                    CornerRadius="10"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LessonPageViewModel}}, Path=NavigateToDetailPageCommand}"
-                                    CommandParameter="{Binding .}"/>
-                        </VerticalStackLayout>
+                                <Label Text="{Binding Description}"
+                                       FontSize="13"
+                                       TextColor="#777"/>
+
+                                <Button Text="{Binding IsAvailable, Converter={StaticResource BoolToTextConverter}}"
+                                        IsEnabled="{Binding IsAvailable}"
+                                        BackgroundColor="{Binding IsAvailable, Converter={StaticResource BoolToColorConverter}}"
+                                        TextColor="White"
+                                        CornerRadius="10"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LessonPageViewModel}}, Path=NavigateToDetailPageCommand}"
+                                        CommandParameter="{Binding .}"/>
+                            </VerticalStackLayout>
+                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

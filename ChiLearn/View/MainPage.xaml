@@ -2,66 +2,95 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ChiLearn.View.MainPage"
-             Shell.NavBarIsVisible="False">
-    <ContentPage.MenuBarItems>
-        <MenuBarItem Text="Menu"/>
-    </ContentPage.MenuBarItems>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition  Width="{OnIdiom Phone = 0*, Desktop= 1*}"/>
-            <ColumnDefinition Width="{OnIdiom Phone = 1*, Desktop= 2*}"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="{OnIdiom Desktop = 1*, Phone= 1*}"/>
-            <RowDefinition Height="{OnIdiom Desktop = 0*, Phone= 2*}"/>
-        </Grid.RowDefinitions>
-        <BoxView Color="{StaticResource MyOrange100}"/>
-        <StackLayout 
-            Grid.Column="{OnIdiom Desktop = 0, Phone = 1}"
-            Grid.Row="{OnIdiom Phone=1}"
-            Orientation="{OnIdiom Desktop = Vertical, Phone = Vertical }"
-            VerticalOptions="Fill"
-            HorizontalOptions="Fill"
-            Spacing="20"
-            Margin="20">
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#F9FAFB">
 
-        </StackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="30">
 
-        <StackLayout
-            Grid.Column="1"
-            Grid.Row="{OnIdiom Phone = 0}"
-            Orientation="Vertical"
-            VerticalOptions="Fill"
-            HorizontalOptions="Fill"
-            Spacing="20"
-            Margin="20">
-            <StackLayout>
-                <Border BackgroundColor ="Black" HorizontalOptions="Center">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="50" />
-                    </Border.StrokeShape>
-                    <BoxView 
-        Color="{StaticResource MyOrange100}" 
-        HeightRequest="100" 
-        WidthRequest="100"/>
+            <!-- Профиль -->
+            <Frame BackgroundColor="White" CornerRadius="16" Padding="20" HasShadow="True">
+                <Grid>
+                    <!-- Основное содержимое -->
+                    <VerticalStackLayout Spacing="20">
+                        <!-- Центрированное изображение -->
+                        <Frame HorizontalOptions="Center" 
+                   BackgroundColor="#F97316" 
+                   CornerRadius="50" 
+                   Padding="0">
+                            <Image Source="avatar.jpeg"
+                       HeightRequest="180"
+                       WidthRequest="180"
+                       Aspect="AspectFill"
+                       Scale="1.2"
+                       Clip="EllipseGeometry Center='90,90' RadiusX='90' RadiusY='90'" />
+                        </Frame>
+                        <Button Text="Регистрация" 
+                                BackgroundColor="#F97316" 
+                                TextColor="White"
+                                FontSize="16"                                
+                                CornerRadius="10"
+                                Padding="5"/>
+                        <!-- Текст под изображением -->
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                            <Label Text="MyName!" 
+                       FontSize="24" 
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"/>
+                            <Label Text="Пинь чилинь!" 
+                       FontSize="14" 
+                       TextColor="#6B7280"
+                       HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
 
-                </Border>
-                <Label Text="MyName" HorizontalOptions="Center"/>
-            </StackLayout>
+                    <!-- Кнопки в правом верхнем углу -->
+                    <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start" Spacing="10">
+                        <!--<Button Text="Выход" 
+                    BackgroundColor="Transparent" 
+                    TextColor="#F97316"
+                    CornerRadius="10"
+                    Padding="10,5"
+                    Command="OnLogoutClicked"/>-->
 
-            <StackLayout>
+                        
+                    </HorizontalStackLayout>
+                </Grid>
+            </Frame>
+            
+            <Frame BackgroundColor="White" CornerRadius="16" Padding="15" HasShadow="True">
+                <HorizontalStackLayout Spacing="30" HorizontalOptions="Center">
+                    <VerticalStackLayout Spacing="25" HorizontalOptions="Center">
+                        <Label Text="HSK Уровень" FontSize="14" TextColor="#6B7280" HorizontalOptions="Center"/>
+                        <Label Text="{Binding HskLevel}" FontSize="36" FontAttributes="Bold" TextColor="#2563EB"/>
+                    </VerticalStackLayout>
 
-                <Label Text="Уровень HSK: 1"/>
-            </StackLayout>
-                    
+                    <BoxView WidthRequest="1" BackgroundColor="#D1D5DB" HeightRequest="50"/>
 
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="Уроков &#10;завершено"
+                               FontSize="14"
+                               TextColor="#6B7280"
+                               HorizontalOptions="Center"/>
+                        <Label Text="{Binding NumOfLastLesson}" FontSize="36" FontAttributes="Bold" TextColor="#10B981"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+            </Frame>
 
+            <!-- Прогресс -->
+            <Frame BackgroundColor="White" CornerRadius="16" Padding="20" HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Ваш прогресс" FontSize="20" FontAttributes="Bold"/>
+                    <ProgressBar Progress="{Binding PercentCompletedLevels}"
+                     HeightRequest="10"
+                     BackgroundColor="#E5E7EB"
+                     ProgressColor="#34D399"/>
+                    <Label Text="{Binding ProgressBarPercent, StringFormat='Прогресс: {0}%'}" FontSize="14" TextColor="#6B7280"/>
+                    <!-- Привяжи к проценту -->
+                </VerticalStackLayout>
+            </Frame>
+            <!-- TODO: Добавь здесь меню или переход к урокам -->
 
-
-        </StackLayout>
-
-
-    </Grid>
-
-
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

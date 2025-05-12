@@ -11,6 +11,7 @@ using ChiLearn.ViewModel.Lessons.TheoryPart;
 using Plugin.Maui.Audio;
 using ChiLearn.View.LessonsView.PracticeView;
 using ChiLearn.Services;
+using ChiLearn.ViewModel;
 
 namespace ChiLearn
 {
@@ -73,7 +74,8 @@ namespace ChiLearn
                 .AddTransient<LessonDetailViewModel>()
                 .AddTransient<TheoryViewModel>()
                 .AddTransient<MatchingViewModel>()
-                .AddTransient<PronunciationPracticePage>();
+                .AddTransient<PronunciationPracticePage>()
+                .AddTransient<MainPage>();
 
             return mauiAppBuilder;
         }
@@ -85,7 +87,8 @@ namespace ChiLearn
                 .AddTransient<LessonDetailPage>()
                 .AddTransient<TheoryPage>()
                 .AddTransient<MatchingPage>()
-                .AddTransient<PronunciationPracticeViewModel>();
+                .AddTransient<PronunciationPracticeViewModel>()
+                .AddTransient<MainViewModel>();
 
 
             return mauiAppBuilder;

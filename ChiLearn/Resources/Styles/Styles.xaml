@@ -3,7 +3,13 @@
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
+    
+    <Style x:Key="FloatingTabBarStyle" TargetType="TabBar">
+        <Setter Property="Shell.TabBarBackgroundColor" Value="Transparent"/>
+        <Setter Property="Shell.TabBarUnselectedColor" Value="LightGray"/>
+        <Setter Property="Shell.TabBarTitleColor" Value="Black"/>
+        <Setter Property="Shell.TabBarForegroundColor" Value="White"/>
+    </Style>
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
     </Style>
