@@ -192,7 +192,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
                 {
                 {"SelectedLesson", TLesson}
                 };
-                await Shell.Current.GoToAsync("TheoryPage", parameters);
+                await Shell.Current.GoToAsync("PronunciationPracticePage", parameters);
             }
             catch (Exception ex)
             {

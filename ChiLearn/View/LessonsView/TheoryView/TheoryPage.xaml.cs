@@ -1,6 +1,5 @@
 using ChiLearn.ViewModel.Lessons.TheoryPart;
 using Core.Domain.Entity;
-using CommunityToolkit.Maui;
 
 namespace ChiLearn.View.LessonsView.TheoryView;
 

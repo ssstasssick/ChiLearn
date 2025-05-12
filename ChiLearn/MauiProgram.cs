@@ -7,11 +7,10 @@ using ChiLearn.ViewModel.Lessons;
 using System.Diagnostics;
 using Infrastructure.Persistence.Sqlite.Configuration;
 using ChiLearn.View.LessonsView.TheoryView;
-using CommunityToolkit.Maui;
 using ChiLearn.ViewModel.Lessons.TheoryPart;
 using Plugin.Maui.Audio;
-using Microsoft.Maui.Storage;
 using ChiLearn.View.LessonsView.PracticeView;
+using ChiLearn.Services;
 
 namespace ChiLearn
 {
@@ -22,7 +21,6 @@ namespace ChiLearn
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -60,7 +58,11 @@ namespace ChiLearn
         {
             _ = mauiAppBuilder.Services
                 .AddSingleton<AppShell>()
-                .AddSingleton(AudioManager.Current);
+                .AddSingleton(AudioManager.Current)
+                .AddSingleton(new SpeechFlowService(
+                        "JRAWPAHaEh7cZdGE",
+                        "kBbaTiK4pjXOrPIy"
+));
             return mauiAppBuilder;
         }
 
@@ -70,7 +72,8 @@ namespace ChiLearn
                 .AddTransient<LessonPageViewModel>()
                 .AddTransient<LessonDetailViewModel>()
                 .AddTransient<TheoryViewModel>()
-                .AddTransient<MatchingViewModel>();
+                .AddTransient<MatchingViewModel>()
+                .AddTransient<PronunciationPracticePage>();
 
             return mauiAppBuilder;
         }
@@ -81,7 +84,8 @@ namespace ChiLearn
                 .AddTransient<LessonsPage>()
                 .AddTransient<LessonDetailPage>()
                 .AddTransient<TheoryPage>()
-                .AddTransient<MatchingPage>();
+                .AddTransient<MatchingPage>()
+                .AddTransient<PronunciationPracticeViewModel>();
 
 
             return mauiAppBuilder;
@@ -121,7 +125,7 @@ namespace ChiLearn
             }
         }
 
-        
+
 
 
 

@@ -83,12 +83,24 @@
                        FontAttributes="Bold"
                        HorizontalOptions="Center" />
                 <Button Text="Перейти к произношению"
-                        Command="{Binding ContinueToPronunciationCommand}"
+                        Command="{Binding GoToPronunciationCommand}"
                         BackgroundColor="Green"
                         TextColor="White"
                         HeightRequest="50"
                         CornerRadius="12" />
             </StackLayout>
+            <!--<StackLayout IsVisible="True" Spacing="10">
+                <Label Text="Отлично! Все слова сопоставлены верно 🎉"
+           TextColor="Green"
+           FontAttributes="Bold"
+           HorizontalOptions="Center" />
+                <Button Text="Перейти к произношению"
+            Command="{Binding GoToPronunciationCommand}"
+            BackgroundColor="Green"
+            TextColor="White"
+            HeightRequest="50"
+            CornerRadius="12" />
+            </StackLayout>-->
 
         </VerticalStackLayout>
     </ScrollView>

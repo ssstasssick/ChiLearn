@@ -8,6 +8,7 @@ public partial class LessonsPage : ContentPage
 
 	public LessonsPage(LessonPageViewModel viewModel)
 	{
+
 		InitializeComponent();
 
 		BindingContext = _viewModel = viewModel;

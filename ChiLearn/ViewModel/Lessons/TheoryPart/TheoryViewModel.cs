@@ -1,6 +1,7 @@
 ﻿using ChiLearn.Abstractions;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
+using Core.Domain.Services;
 using Plugin.Maui.Audio;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -108,7 +109,7 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
         {
             try
             {
-                var audioPath = Path.Combine("Audio", selectedWord.AudioPath) + ".mp3";
+                var audioPath = AudioPath.GetAudioPath(selectedWord);
 
                 using var stream = await FileSystem.OpenAppPackageFileAsync(audioPath);
                 var player = AudioManager.Current.CreatePlayer(stream);
