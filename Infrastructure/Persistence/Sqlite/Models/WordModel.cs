@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Sqlite.Models
         [Name("Pinyin")]
         public string Pinyin { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]
-        public bool Learned { get; set; } = false;
+        public bool IsFavorite { get; set; } = false;
         [CsvHelper.Configuration.Attributes.Ignore]
         public int HskLevel { get; set; }
         [CsvHelper.Configuration.Attributes.Ignore]

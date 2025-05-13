@@ -31,10 +31,10 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
         {
             if (_database is not null)
             {
-                //_ = await _database.DeleteAllAsync<LessonWordModel>();
-                //_ = await _database.DeleteAllAsync<LessonModel>();
-                //_ = await _database.DeleteAllAsync<WordModel>();
-
+                //if (File.Exists(GetDatabasePath(Constants.DatabaseFileName)))
+                //{
+                //    File.Delete(GetDatabasePath(Constants.DatabaseFileName));
+                //}
                 return;
             }
 
@@ -49,10 +49,12 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
             {
                 throw new NullReferenceException("Local DB connection is not initialized");
             }
-            
+
             _ = await _database.CreateTableAsync<LessonModel>();
             _ = await _database.CreateTableAsync<WordModel>();
             _ = await _database.CreateTableAsync<LessonWordModel>();
+            _ = await _database.CreateTableAsync<RuleModel>();
+            _ = await _database.CreateTableAsync<LessonRuleModel>();
         }
 
         private string GetDatabasePath(string filename)

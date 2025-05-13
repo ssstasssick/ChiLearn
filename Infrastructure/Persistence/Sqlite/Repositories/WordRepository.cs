@@ -102,9 +102,16 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
            
         }
 
-        public Task<Word> Update(Word lesson)
+        public async Task<Word> Update(Word lesson)
         {
-            throw new NotImplementedException();
+            await _connection.Init();
+
+            var lessonModel = _mapper.MapToModel(lesson);
+
+            await _connection.Database
+                .UpdateAsync(lessonModel);
+
+            return lesson;
         }
     }
 }

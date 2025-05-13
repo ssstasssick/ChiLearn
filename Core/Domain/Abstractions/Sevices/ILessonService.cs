@@ -15,5 +15,6 @@ namespace Core.Domain.Abstractions.Sevices
         Task<Lesson?> GetLastCompletedLessonAsync();
         Task<int> GetCountOfLessonsByHskLevel(int hskLvl);
 
+
     }
 }

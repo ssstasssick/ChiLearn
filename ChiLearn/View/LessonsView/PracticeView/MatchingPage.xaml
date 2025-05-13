@@ -7,30 +7,59 @@
              Title="Сопоставление слов">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="16">
+        <VerticalStackLayout Padding="20" Spacing="25">
 
-            <Label Text="Сопоставьте иероглифы с переводами"
-                   FontSize="20"
+            <!-- Выбранные слоты (SelectedWords) -->
+            <Label Text="Сопоставьте слова в правильном порядке:" 
                    FontAttributes="Bold"
-                   HorizontalOptions="Center" />
+                   FontSize="18" />
 
-            <!-- Список слов и выпадающих списков -->
-            <CollectionView ItemsSource="{Binding Matches}">
+            <CollectionView ItemsSource="{Binding SelectedWords}" 
+                            ItemsLayout="HorizontalList"
+                            HorizontalScrollBarVisibility="Never">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*, 2*" Padding="5">
-                            <!-- Китайское слово -->
-                            <Label Text="{Binding ChiWord}"
-                                   FontSize="18"
-                                   VerticalOptions="Center" />
+                        <Frame BorderColor="Gray" Padding="10" Margin="5" WidthRequest="90" HeightRequest="50">
+                            <Label Text="{Binding .}" 
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   HorizontalTextAlignment="Center"
+                                   VerticalTextAlignment="Center"
+                                   FontSize="16"
+                                   TextColor="Black" />
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                            <!-- Выбор русского перевода -->
-                            <Picker Grid.Column="1"
-                                    Title="Выберите перевод"
-                                    ItemsSource="{Binding Source={x:Reference MatchingPageName}, Path=BindingContext.RussianWords}"
-                                    SelectedItem="{Binding SelectedRu, Mode=TwoWay}" />
+            <!-- Список китайских слов (кнопки) -->
+            <Label Text="Выберите слово:" FontSize="18" />
 
-                        </Grid>
+            <Label Text="{Binding CurrentRuWord}"
+               FontSize="22"
+               FontAttributes="Bold"
+               TextColor="DarkRed"
+               HorizontalOptions="Center" />
+
+            <CollectionView x:Name="WordButtonList"                            
+                            ItemsSource="{Binding ChineseWords}"
+                            ItemsLayout="VerticalGrid, 4"
+                            HorizontalScrollBarVisibility="Never"
+                            VerticalScrollBarVisibility="Never"
+                            Margin="10,10">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Text="{Binding .}" 
+                                Command="{Binding BindingContext.WordClickCommand, Source={x:Reference Name=WordButtonList}}"
+                                CommandParameter="{Binding .}"
+                                Margin="10,10"
+                                CornerRadius="100"
+                                Padding="0,0"
+                                WidthRequest="70"
+                                HeightRequest="70"
+                                BackgroundColor="LightBlue"
+                                TextColor="Black"
+                                FontSize="30"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
@@ -38,70 +67,62 @@
             <!-- Кнопка проверки -->
             <Button Text="Проверить"
                     Command="{Binding SubmitMatchingCommand}"
-                    BackgroundColor="DarkBlue"
+                    IsVisible="{Binding ShowCheckButt}"
+                    BackgroundColor="Green"
                     TextColor="White"
-                    HeightRequest="50"
-                    IsVisible="{Binding ShowCheck}"
-                    CornerRadius="12" />
+                    FontAttributes="Bold"
+                    Margin="0,10" />
 
-            <!-- Показать при ошибках -->
-            <StackLayout IsVisible="{Binding ShowRetry}" Spacing="10">
-                <Label Text="Есть ошибки. Хотите попробовать снова?" 
-                       TextColor="Red"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center" />
-                <Button Text="Попробовать снова"
-                        Command="{Binding RetryCommand}"
-                        BackgroundColor="OrangeRed"
-                        TextColor="White"
-                        HeightRequest="50"
-                        CornerRadius="12" />
-                <Button Text="Вернуться к теории"
-                        Command="{Binding GoToTheoryCommand}"
-                        BackgroundColor="Gray"
-                        TextColor="White"
-                        HeightRequest="50"
-                        CornerRadius="12" />
-                <Button Text="Показать ошибки"
-                        IsVisible="{Binding ShowRetry}"
-                        Command="{Binding OnShowMistakesCommand}" />
+            <!-- Ошибки -->
+            <Label Text="Ошибки:" 
+                   IsVisible="{Binding ShowMistakes}"
+                   FontAttributes="Bold" />
 
-                <CollectionView ItemsSource="{Binding Mistakes}"
-                IsVisible="{Binding ShowMistakes}">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Label Text="{Binding}" TextColor="Red" FontAttributes="Italic" />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </StackLayout>
+            <CollectionView ItemsSource="{Binding Mistakes}" 
+                            IsVisible="{Binding ShowMistakes}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding .}" 
+                               TextColor="Red" 
+                               FontSize="14"
+                               Margin="5,0" />
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-            <!-- Показать при успехе -->
-            <StackLayout IsVisible="{Binding ShowContinue}" Spacing="10">
-                <Label Text="Отлично! Все слова сопоставлены верно 🎉"
-                       TextColor="Green"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center" />
-                <Button Text="Перейти к произношению"
-                        Command="{Binding GoToPronunciationCommand}"
-                        BackgroundColor="Green"
-                        TextColor="White"
-                        HeightRequest="50"
-                        CornerRadius="12" />
-            </StackLayout>
-            <!--<StackLayout IsVisible="True" Spacing="10">
-                <Label Text="Отлично! Все слова сопоставлены верно 🎉"
-           TextColor="Green"
-           FontAttributes="Bold"
-           HorizontalOptions="Center" />
-                <Button Text="Перейти к произношению"
-            Command="{Binding GoToPronunciationCommand}"
-            BackgroundColor="Green"
-            TextColor="White"
-            HeightRequest="50"
-            CornerRadius="12" />
-            </StackLayout>-->
+            <Label Text="Все правильно!" 
+                   IsVisible="{Binding IsMatchingSuccessful}"
+                   TextColor="Green"
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   Margin="0,10" />
+            
+            <Button Text="{Binding ShowMistakes, Converter={StaticResource BoolToShowHideConverter}, ConverterParameter='Ошибки'}"
+                    Command="{Binding OnShowMistakesCommand}"
+                    IsVisible="{Binding ShowRetry}" />
 
+            <!-- Кнопка Повторить -->
+            <Button Text="Повторить"
+                    Command="{Binding RetryCommand}"
+                    IsVisible="{Binding ShowRetry}"
+                    BackgroundColor="Orange"
+                    TextColor="White"
+                    Margin="0,10" />
+
+            <!-- Кнопка Продолжить -->
+            <Button Text="Продолжить"
+                    Command="{Binding GoToPronunciationCommand}"
+                    IsVisible="{Binding IsMatchingSuccessful}"
+                    BackgroundColor="Blue"
+                    TextColor="White"
+                    Margin="0,10" />
+
+            <!-- Кнопка к теории -->
+            <Button Text="Назад к теории"
+                    IsVisible="{Binding ShowRetry}"
+                    Command="{Binding GoToTheoryCommand}"
+                    Margin="0,20" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

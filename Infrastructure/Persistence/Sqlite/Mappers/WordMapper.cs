@@ -15,7 +15,7 @@ namespace Infrastructure.Persistence.Sqlite.Mappers
                 EngWord = infrastucture.EngWord,
                 RuWord = infrastucture.RuWord,
                 HskLevel = infrastucture.HskLevel,
-                Learned = infrastucture.Learned,
+                IsFavorite = infrastucture.IsFavorite,
                 AudioPath = infrastucture.AudioPath,
                 Pinyin = infrastucture.Pinyin
             };
@@ -30,7 +30,7 @@ namespace Infrastructure.Persistence.Sqlite.Mappers
                 EngWord = domain.EngWord,
                 RuWord = domain.RuWord,
                 HskLevel = domain.HskLevel,
-                Learned = domain.Learned,
+                IsFavorite = domain.IsFavorite,
                 AudioPath = domain.AudioPath,
                 Pinyin = domain.Pinyin
             };

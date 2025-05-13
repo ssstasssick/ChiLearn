@@ -1,4 +1,5 @@
 ﻿using ChiLearn.Abstractions;
+using ChiLearn.Services;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
 using Core.Domain.Services;
@@ -109,7 +110,7 @@ namespace ChiLearn.ViewModel.Lessons.TheoryPart
         {
             try
             {
-                var audioPath = AudioPath.GetAudioPath(selectedWord);
+                var audioPath = AudioPlayerService.SetAudioPath(selectedWord.AudioPath);
 
                 using var stream = await FileSystem.OpenAppPackageFileAsync(audioPath);
                 var player = AudioManager.Current.CreatePlayer(stream);

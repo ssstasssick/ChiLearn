@@ -14,7 +14,9 @@ namespace Core
         public static IServiceCollection RegistryCoreServices(this IServiceCollection services)
         {
             return services
-                .AddTransient<ILessonService, LessonService>();
+                .AddTransient<ILessonService, LessonService>()
+                .AddTransient<INotebookService, NotebookService>()
+                .AddTransient<IWordService, WordService>();
         }
     }
 }

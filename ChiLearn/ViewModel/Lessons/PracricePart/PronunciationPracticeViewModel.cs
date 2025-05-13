@@ -102,7 +102,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
             {
                 _audioPlayer?.Dispose();
 
-                var audioPath = AudioPath.GetAudioPath(SelectedWord);
+                var audioPath = AudioPlayerService.SetAudioPath(SelectedWord.AudioPath);
                 using var stream = await FileSystem.OpenAppPackageFileAsync(audioPath);
 
                 _audioPlayer = AudioManager.Current.CreatePlayer(stream);

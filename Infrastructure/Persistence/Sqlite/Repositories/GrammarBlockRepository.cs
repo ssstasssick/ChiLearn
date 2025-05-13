@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Persistence.Sqlite.Models
+namespace Infrastructure.Persistence.Sqlite.Repositories
 {
-    internal class DiсtionaryModel
+    internal class GrammarBlockRepository
     {
     }
 }

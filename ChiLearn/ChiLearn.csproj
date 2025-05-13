@@ -111,7 +111,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Constants\" />
-	  <Folder Include="ViewModel\Notebook\" />
 	</ItemGroup>
 
 

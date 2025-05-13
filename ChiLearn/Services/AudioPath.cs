@@ -7,13 +7,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Domain.Services
+namespace ChiLearn.Services
 {
-    internal static class AudioPath
+    public class AudioPlayerService
     {
-        public static string GetAudioPath(Word selectedWord) 
-        { 
-            return Path.Combine("Audio", selectedWord.AudioPath) + ".wav";
+        private static string _audioPath;
+        private IAudioPlayer? _audioPlayer;
+        public AudioPlayerService(string audioPath)
+        {
+            _audioPath = SetAudioPath(audioPath);
         }
+        public static string SetAudioPath(string audioName) 
+        { 
+            _audioPath = Path.Combine("Audio", audioName) + ".wav";
+            return _audioPath;
+        }
+
+        public async Task PlayAudioAsync()
+        {
+            try
+            {
+                _audioPlayer?.Dispose();
+
+                using var stream = await FileSystem.OpenAppPackageFileAsync(_audioPath);
+
+                _audioPlayer = AudioManager.Current.CreatePlayer(stream);
+                _audioPlayer.Play();
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Ошибка", $"Не удалось воспроизвести аудио: {ex.Message}", "OK");
+            }
+        }
+    
+
     }
 }

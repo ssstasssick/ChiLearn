@@ -14,25 +14,43 @@ namespace ChiLearn.View.LessonsView.PracticeView
     public class MatchingViewModel : BaseNotifyObject
     {
         private readonly ILessonService _lessonService;
+        private List<Word> _wordSequence = new();
+        private int _currentIndex = 0;
+        private List<string> _shuffledRuWords;
 
         public MatchingViewModel(ILessonService lessonService)
         {
             _lessonService = lessonService;
 
-            OnShowMistakesCommand = new Command(OnShowMistakes);
+            CheckMatchingCommand = new Command(OnSubmitMatching);
+            WordClickCommand = new Command<string>(OnWordClick);
             SubmitMatchingCommand = new Command(OnSubmitMatching);
             RetryCommand = new Command(OnRetry);
+            OnShowMistakesCommand = new Command(() => ShowMistakes = !ShowMistakes);
             GoToTheoryCommand = new Command(OnGoToTheory);
             GoToPronunciationCommand = new Command(OnGoToPronunciation);
+
         }
 
-        public ObservableCollection<Word> Words { get; } = new();
         public ObservableCollection<string> ChineseWords { get; } = new();
-        public ObservableCollection<string> RussianWords { get; } = new();
+        public ObservableCollection<string> SelectedWords { get; } = new();
         public ObservableCollection<string> Mistakes { get; } = new();
-
-        public ObservableCollection<MatchingItem> Matches { get; } = new();
         public Dictionary<string, bool> MatchingResults { get; } = new();
+
+        public string CurrentRuWord =>
+    _shuffledRuWords != null && _currentIndex < _shuffledRuWords.Count
+        ? _shuffledRuWords[_currentIndex]
+        : null;
+        public bool ShowCheck => _currentIndex >= _wordSequence.Count;
+
+        public ICommand WordClickCommand { get; }
+        public ICommand SubmitMatchingCommand { get; }
+        public ICommand RetryCommand { get; }
+        public ICommand OnShowMistakesCommand { get; }
+        public ICommand GoToTheoryCommand { get; }
+        public ICommand GoToPronunciationCommand { get; }
+        public ICommand CheckMatchingCommand { get; }
+        public ICommand SelectedWordClickCommand { get; }
 
         private Lesson _tLesson;
         public Lesson TLesson
@@ -54,18 +72,19 @@ namespace ChiLearn.View.LessonsView.PracticeView
             get => _showRetry;
             set => SetProperty(ref _showRetry, value);
         }
-        private bool _showCheck;
-        public bool ShowCheck
-        {
-            get => _showCheck;
-            set => SetProperty(ref _showCheck, value);
-        }
 
         private bool _showContinue;
         public bool ShowContinue
         {
             get => _showContinue;
             set => SetProperty(ref _showContinue, value);
+        }
+
+        private bool _showCheck;
+        public bool ShowCheckButt
+        {
+            get => _showCheck;
+            set => SetProperty(ref _showCheck, value);
         }
 
         private bool _showMistakes;
@@ -75,49 +94,63 @@ namespace ChiLearn.View.LessonsView.PracticeView
             set => SetProperty(ref _showMistakes, value);
         }
 
-        public ICommand SubmitMatchingCommand { get; }
-        public ICommand RetryCommand { get; }
-        public ICommand GoToTheoryCommand { get; }
-        public ICommand GoToPronunciationCommand { get; }
-
-        internal void Initialize(Lesson lesson)
+        public void Initialize(Lesson lesson)
         {
-            if (lesson == null) throw new ArgumentNullException(nameof(lesson));
-            if (lesson.Words == null) throw new ArgumentException("Lesson words cannot be null");
-
-            Words.Clear();
-            ChineseWords.Clear();
-            Matches.Clear();
-            RussianWords.Clear();
-
-            ShowRetry = false;
-            ShowContinue = false;
-            ShowCheck = true;
-
-            foreach (var word in lesson.Words)
-            {
-                Words.Add(word);
-                ChineseWords.Add(word.ChiWord);
-                RussianWords.Add(word.RuWord);
-
-                Matches.Add(new MatchingItem
-                {
-                    ChiWord = word.ChiWord,
-                    SelectedRu = null
-                });
-            }
-
-            RussianWords.Shuffle();
+            if (lesson == null || lesson.Words == null)
+                throw new ArgumentException("Lesson or its words cannot be null");
 
             TLesson = lesson;
+            _wordSequence = lesson.Words.ToList();
 
-            OnPropertyChanged(nameof(Matches));
+            ChineseWords.Clear();
+            SelectedWords.Clear();
+            Mistakes.Clear();
+            MatchingResults.Clear();
+
+            // Перемешиваем китайские слова
+            var shuffledChinese = _wordSequence.Select(w => w.ChiWord).ToList();
+            shuffledChinese.Shuffle();
+
+            // Перемешиваем русские слова
+            var shuffledRussian = _wordSequence.Select(w => w.RuWord).ToList();
+            shuffledRussian.Shuffle();
+
+            // Добавляем перемешанные китайские слова в список
+            foreach (var chi in shuffledChinese)
+                ChineseWords.Add(chi);
+
+            // Добавляем перемешанные русские слова в список SelectedWords
+            foreach (var ru in shuffledRussian)
+                SelectedWords.Add("");
+
+            // Сохраняем новый порядок русских слов для использования при отображении
+            _shuffledRuWords = shuffledRussian;
+
+            _currentIndex = 0;
+            ShowRetry = false;
+            ShowContinue = false;
+            ShowCheckButt = false;
+
+            OnPropertyChanged(nameof(ChineseWords));
+            OnPropertyChanged(nameof(SelectedWords));
+            OnPropertyChanged(nameof(CurrentRuWord));
         }
 
-        public ICommand OnShowMistakesCommand { get; }
-        private void OnShowMistakes()
+        private void OnWordClick(string selectedChi)
         {
-            ShowMistakes = !ShowMistakes;
+            if (_currentIndex >= _wordSequence.Count) return;
+
+            SelectedWords[_currentIndex] = selectedChi;
+            ChineseWords.Remove(selectedChi);
+
+            _currentIndex++;
+
+            ShowCheckButt = SelectedWords.All(w => !string.IsNullOrEmpty(w));
+
+            OnPropertyChanged(nameof(SelectedWords));
+            OnPropertyChanged(nameof(ChineseWords));
+            OnPropertyChanged(nameof(CurrentRuWord));
+
         }
 
         private void OnSubmitMatching()
@@ -127,94 +160,82 @@ namespace ChiLearn.View.LessonsView.PracticeView
 
             bool allCorrect = true;
 
-            foreach (var item in Matches)
+            var translationMap = _wordSequence
+                       .GroupBy(w => w.RuWord) // Группируем слова по переводу
+                       .ToDictionary(g => g.Key, g => g.Select(w => w.ChiWord).ToList());
+
+            for (int i = 0; i < _shuffledRuWords.Count; i++) // Используем _shuffledRuWords
             {
-                var word = Words.FirstOrDefault(w => w.ChiWord == item.ChiWord);
-                bool isCorrect = word != null && word.RuWord == item.SelectedRu;
-                MatchingResults[item.ChiWord] = isCorrect;
+                var correctRu = _shuffledRuWords[i]; // Получаем слово из перемешанного списка
+                var correctChi = _wordSequence.First(w => w.RuWord == correctRu).ChiWord; // Ищем соответствующее китайское слово
+                var selectedChi = SelectedWords[i];
+
+                bool isCorrect = false;
+
+                if (translationMap.ContainsKey(correctRu))
+                {
+                    isCorrect = translationMap[correctRu].Contains(selectedChi);
+                }
+
+                MatchingResults[correctChi] = isCorrect;
 
                 if (!isCorrect)
                 {
                     allCorrect = false;
-                    Mistakes.Add($"{item.ChiWord} → {item.SelectedRu ?? "ничего"} (нужно: {word?.RuWord})");
+                    Mistakes.Add($"{i + 1}) {selectedChi ?? "ничего"} (нужно: {correctChi} -> {correctRu})");
                 }
             }
 
+            if(allCorrect) Shell.Current.GoToAsync($"mainpage?lessonCompleted=true");
 
             IsMatchingSuccessful = allCorrect;
             ShowRetry = !allCorrect;
             ShowContinue = allCorrect;
-            ShowCheck = false;
+            ShowCheckButt = false;
 
             OnPropertyChanged(nameof(MatchingResults));
             OnPropertyChanged(nameof(Mistakes));
         }
 
+
         private void OnRetry()
         {
-            Mistakes.Clear();
-            MatchingResults.Clear();
-            IsMatchingSuccessful = false;
+            var shuffled = _wordSequence.Select(w => w.ChiWord).ToList();
+            shuffled.Shuffle();
 
+            ChineseWords.Clear();
+            Mistakes.Clear();
+            foreach (var word in shuffled)
+                ChineseWords.Add(word);
+
+            for (int i = 0; i < SelectedWords.Count; i++)
+                SelectedWords[i] = "";
+
+            _currentIndex = 0;
+            IsMatchingSuccessful = false;
             ShowRetry = false;
             ShowContinue = false;
-            ShowCheck = true;
+            ShowCheckButt = true;
 
-            RussianWords.Shuffle();
-
-            OnPropertyChanged(nameof(Mistakes));
+            OnPropertyChanged(nameof(ChineseWords));
+            OnPropertyChanged(nameof(SelectedWords));
+            OnPropertyChanged(nameof(CurrentRuWord));
             OnPropertyChanged(nameof(MatchingResults));
-            OnPropertyChanged(nameof(RussianWords));
+            OnPropertyChanged(nameof(Mistakes));
+            OnPropertyChanged(nameof(ShowCheck));
         }
 
         private async void OnGoToTheory()
         {
-            try
-            {
-                var parameters = new Dictionary<string, object>
-                {
-                {"SelectedLesson", TLesson}
-                };
-                await Shell.Current.GoToAsync("TheoryPage", parameters);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"{ex.Message}");
-            }
+            var parameters = new Dictionary<string, object> { { "SelectedLesson", TLesson } };
+            await Shell.Current.GoToAsync("TheoryPage", parameters);
         }
-
 
         private async void OnGoToPronunciation()
         {
-            try
-            {
-                var parameters = new Dictionary<string, object>
-                {
-                {"SelectedLesson", TLesson}
-                };
-                await Shell.Current.GoToAsync("PronunciationPracticePage", parameters);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"{ex.Message}");
-            }
+            var parameters = new Dictionary<string, object> { { "SelectedLesson", TLesson } };
+            await Shell.Current.GoToAsync("PronunciationPracticePage", parameters);
         }
     }
-
-
-
-    public static class ShuffleExtension
-    {
-        private static Random rng = new();
-
-        public static void Shuffle<T>(this ObservableCollection<T> collection)
-        {
-            var list = collection.ToList();
-            collection.Clear();
-            foreach (var item in list.OrderBy(_ => rng.Next()))
-                collection.Add(item);
-        }
-    }
-
 
 }

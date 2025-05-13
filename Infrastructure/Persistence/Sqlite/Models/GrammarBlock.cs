@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChiLearn.View.Notebook
+namespace Infrastructure.Persistence.Sqlite.Models
 {
-    internal class NotebookView
+    internal class ExampleModel
     {
     }
 }

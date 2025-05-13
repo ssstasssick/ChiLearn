@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Core.Domain.Abstractions.Sevices
 {
-    public interface IWordService
+    public interface INotebookService
     {
-        Task ChangeWordFavoritesState(int id);
+        Task<List<Word>> GetLearnedWords();        
     }
 }

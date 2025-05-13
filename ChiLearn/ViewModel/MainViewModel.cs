@@ -53,11 +53,11 @@ namespace ChiLearn.ViewModel
             _ = InitiazeValues();
         }
 
-        private async Task InitiazeValues()
+        public async Task InitiazeValues()
         {
             var lastLesson =  await _lessonService.GetLastCompletedLessonAsync();
-            HskLevel = lastLesson.HskLevel ?? 1;
-            NumOfLastLesson = lastLesson.LessonNum;
+            HskLevel = lastLesson is null ? 1 : lastLesson.HskLevel ?? 1;
+            NumOfLastLesson = lastLesson is null ? 0 : lastLesson.LessonNum;
             var l = await _lessonService.GetCountOfLessonsByHskLevel(HskLevel);
             PercentCompletedLevels = (double)NumOfLastLesson / (await _lessonService.GetCountOfLessonsByHskLevel(HskLevel));
             ProgressBarPercent = Double.Round(PercentCompletedLevels * 100);
