@@ -6,127 +6,179 @@ using Core.Domain.Entity;
 using Plugin.Maui.Audio;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-namespace ChiLearn.ViewModel.Notebook
+
+namespace ChiLearn.ViewModel.Notebook;
+
+public class NotebookViewModel : BaseNotifyObject
 {
-    public class NotebookViewModel : BaseNotifyObject
+    private readonly INotebookService _notebookService;
+    private readonly IWordService _wordService;
+    private readonly IRuleService _ruleService;
+
+    public ICommand MarkAsFavoritesCommand { get; }
+    public ICommand PlayAudioCommand { get; }
+    public ICommand SetFilterCommand { get; }
+    public ICommand ShowRulesCommand { get; }
+    public ICommand OpenRuleCommand { get; }
+
+    public ObservableCollection<DirectWord> LearnedWords { get; } = new();
+    public ObservableCollection<DirectWord> FilteredWords { get; } = new();
+    public ObservableCollection<Rule> Rules { get; } = new();
+
+    private string _activeFilter = "All";
+    private string _currentSection = "Words"; // или "Rules"
+
+    private bool _isWordsEmpty;
+    private bool _IsRulesEmpty;
+    public bool IsLoading
     {
-        private readonly INotebookService _notebookService;
-        private readonly IWordService _wordService;
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
+    }
+    private bool _isLoading;
 
-        public ICommand MarkAsFavoritesCommand { get; }
-        public ICommand PlayAudioCommand { get; }
-        public ICommand SetFilterCommand { get; }
-        public ICommand ReloadCommand { get; }
-        public ObservableCollection<DirectWord> LearnedWords { get; } = new();
-        public ObservableCollection<DirectWord> FilteredWords { get; } = new();
-
-        private string _activeFilter = "All";
-
-        private bool _isLoading;
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set => SetProperty(ref _isLoading, value);
-        }
-
-        private bool _isFilterAllSelected = true;
-        public bool IsFilterAllSelected
-        {
-            get => _isFilterAllSelected;
-            set => SetProperty(ref _isFilterAllSelected, value);
-        }
-
-        private bool _isFilterFavoritesSelected;
-        public bool IsFilterFavoritesSelected
-        {
-            get => _isFilterFavoritesSelected;
-            set => SetProperty(ref _isFilterFavoritesSelected, value);
-        }
-
-        public NotebookViewModel(
-            INotebookService notebookService,
-            IWordService wordService)
-        {
-            _notebookService = notebookService;
-            _wordService = wordService;
-
-            MarkAsFavoritesCommand = new Command<DirectWord>(async directWord =>
-            {
-                if (directWord is not null)
-                {
-                    directWord.IsFavorite = !directWord.IsFavorite;
-                    await _wordService.ChangeWordFavoritesState(directWord.WordId);
-                    ApplyFilter(); // чтобы сразу обновилось при фильтрации "Избранное"
-                }
-            });
-
-            PlayAudioCommand = new Command<DirectWord>(async dw =>
-            {
-                if (dw is not null) await PlayAudio(dw);
-            });
-
-            SetFilterCommand = new Command<string>(filter =>
-            {
-                _activeFilter = filter;
-                IsFilterAllSelected = filter == "All";
-                IsFilterFavoritesSelected = filter == "Favorites";
-                ApplyFilter();
-            });
-
-            _ = Initialize();
-        }
-
-        private async Task Initialize()
-        {
-            var learnedWord = await _notebookService.GetLearnedWords();
-
-            LearnedWords.Clear();
-            foreach (var w in learnedWord)
-            {
-                LearnedWords.Add(new DirectWord
-                {
-                    WordId = w.WordId,
-                    AudioPath = w.AudioPath,
-                    ChiWord = w.ChiWord,
-                    RuWord = w.RuWord,
-                    HskLevel = w.HskLevel,
-                    IsFavorite = w.IsFavorite,
-                    Pinyin = w.Pinyin
-                });
-            }
-
-            ApplyFilter();
-
-        }
-
-        private void ApplyFilter()
-        {
-            try
-            {
-                IsLoading = true;
-                FilteredWords.Clear();
-
-                var filtered = _activeFilter switch
-                {
-                    "Favorites" => LearnedWords.Where(w => w.IsFavorite),
-                    _ => LearnedWords
-                };
-
-                foreach (var word in filtered)
-                    FilteredWords.Add(word);
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private async Task PlayAudio(DirectWord directWord)
-        {
-            AudioPlayerService audioPlayerService = new AudioPlayerService(directWord.AudioPath);
-            await audioPlayerService.PlayAudioAsync();
-        }
+    public bool IsWordsEmpty
+    {
+        get => _isWordsEmpty;
+        set => SetProperty(ref _isWordsEmpty, value);
     }
 
-}
+    public bool IsRulesEmpty 
+    {
+        get => _IsRulesEmpty;
+        set => SetProperty(ref _IsRulesEmpty, value);
+    }
 
+
+    public bool IsWordsSection => _currentSection == "Words";
+    public bool IsRulesSection => _currentSection == "Rules";
+
+    public bool IsFilterAllSelected => _activeFilter == "All" && IsWordsSection;
+    public bool IsFilterFavoritesSelected => _activeFilter == "Favorites" && IsWordsSection;
+    public bool IsRulesSelected => IsRulesSection;
+
+    public NotebookViewModel(INotebookService notebookService, IWordService wordService, IRuleService ruleService)
+    {
+        _notebookService = notebookService;
+        _wordService = wordService;
+        _ruleService = ruleService;
+
+        MarkAsFavoritesCommand = new Command<DirectWord>(async directWord =>
+        {
+            if (directWord is not null)
+            {
+                directWord.IsFavorite = !directWord.IsFavorite;
+                await _wordService.ChangeWordFavoritesState(directWord.WordId);
+                await ApplyFilter();
+
+            }
+        });
+
+        OpenRuleCommand = new Command<Rule>(async rule =>
+        {
+            var parameters = new Dictionary<string, object>
+            {
+                { "RuleId", rule.Id}
+            };
+            await Shell.Current.GoToAsync("RuleDetailPage", parameters);
+        });
+
+        PlayAudioCommand = new Command<DirectWord>(async dw =>
+        {
+            if (dw is not null)
+                await PlayAudio(dw);
+        });
+
+        SetFilterCommand = new Command<string>(filter =>
+        {
+            _currentSection = "Words";
+            _activeFilter = filter;
+            
+            OnPropertyChanged(nameof(IsRulesSection));
+            OnPropertyChanged(nameof(IsFilterAllSelected));
+            OnPropertyChanged(nameof(IsFilterFavoritesSelected));
+            OnPropertyChanged(nameof(IsRulesSelected));
+            
+
+            ApplyFilter();
+        });
+
+        ShowRulesCommand = new Command(async () =>
+        {
+            _currentSection = "Rules";
+            IsRulesEmpty = IsWordsEmpty = IsRulesSelected && Rules.Count.Equals(0);
+            OnPropertyChanged(nameof(IsWordsSection));
+            OnPropertyChanged(nameof(IsRulesSection));
+            OnPropertyChanged(nameof(IsFilterAllSelected));
+            OnPropertyChanged(nameof(IsFilterFavoritesSelected));
+            OnPropertyChanged(nameof(IsRulesSelected));
+
+            await LoadRulesAsync();
+        });
+
+        _ = Initialize();
+    }
+
+    public async Task Initialize()
+    {
+        IsLoading = true;
+
+        var learnedWords = await _notebookService.GetLearnedWords();
+
+        LearnedWords.Clear();
+        foreach (var w in learnedWords)
+        {
+            LearnedWords.Add(new DirectWord
+            {
+                WordId = w.WordId,
+                AudioPath = w.AudioPath,
+                ChiWord = w.ChiWord,
+                RuWord = w.RuWord,
+                HskLevel = w.HskLevel,
+                IsFavorite = w.IsFavorite,
+                Pinyin = w.Pinyin
+            });
+        }
+
+        ApplyFilter();
+
+        IsLoading = false;
+    }
+
+    private async Task LoadRulesAsync()
+    {
+        IsLoading = true;
+
+        var rules = await _ruleService.GetRules();
+        Rules.Clear();
+        foreach (var rule in rules.Take(10))
+            Rules.Add(rule);
+
+        IsLoading = false;
+    }
+
+    private async Task ApplyFilter()
+    {
+        IsLoading = true;
+        FilteredWords.Clear();
+
+        IEnumerable<DirectWord> filtered = _activeFilter switch
+        {
+            "Favorites" => LearnedWords.Where(w => w.IsFavorite),
+            _ => LearnedWords
+        };
+
+        foreach (var word in filtered)
+            FilteredWords.Add(word);
+
+        
+
+        IsLoading = false;
+    }
+
+    private async Task PlayAudio(DirectWord directWord)
+    {
+        var audioPlayerService = new AudioPlayerService(directWord.AudioPath);
+        await audioPlayerService.PlayAudioAsync();
+    }
+}

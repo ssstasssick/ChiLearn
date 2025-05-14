@@ -59,6 +59,7 @@
 	<ItemGroup>
 		<MauiAsset Include="Resources\Raw\*.csv" />
 		<MauiAsset Include="Resources\Raw\Audio\*.wav" />
+		<MauiAsset Include="Resources\Raw\*.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,6 +81,9 @@
 	  <Compile Update="Resources\Themes\LightTheme.xaml.cs">
 	    <DependentUpon>LightTheme.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="View\Auth\RegisterModelPage.xaml.cs">
+	    <DependentUpon>RegisterModelPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\LessonsView\LessonsPage.xaml.cs">
 	    <DependentUpon>LessonsPage.xaml</DependentUpon>
 	  </Compile>
@@ -87,6 +91,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Resources\Themes\LightTheme.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Auth\RegisterModelPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\LessonsView\PracticeView\MatchingPage.xaml">
@@ -104,7 +111,13 @@
 	  <MauiXaml Update="View\LessonsView\TheoryView\TheoryPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="View\LoadingView\LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="View\Notebook\NotebookPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\RuleView\RuleDetailPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

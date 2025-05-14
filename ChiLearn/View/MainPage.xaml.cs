@@ -18,10 +18,8 @@ namespace ChiLearn.View
         {
             base.OnAppearing();
 
-            if (LessonCompleted)
-            {
-                await ((MainViewModel)BindingContext).InitiazeValues();
-            }
+            await ((MainViewModel)BindingContext).InitiazeValues();
+
         }
 
     }

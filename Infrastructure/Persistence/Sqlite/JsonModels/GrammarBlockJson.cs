@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Persistence.Sqlite.Models
+namespace Infrastructure.Persistence.Sqlite.JsonModels
 {
-    internal class ExampleModel
+    public class GrammarBlockJson
     {
+        public string Type { get; set; }
     }
 }

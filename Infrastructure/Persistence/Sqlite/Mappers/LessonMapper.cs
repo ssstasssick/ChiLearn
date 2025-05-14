@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Sqlite.Mappers
         public LessonModel MapToModel(Lesson domain)
         {
             return new LessonModel
-            {
+            {                
                 LessonId = domain.LessonId,
                 LessonNum = domain.LessonNum,
                 HskLevel = domain.HskLevel,

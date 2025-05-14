@@ -16,7 +16,8 @@ namespace Core
             return services
                 .AddTransient<ILessonService, LessonService>()
                 .AddTransient<INotebookService, NotebookService>()
-                .AddTransient<IWordService, WordService>();
+                .AddTransient<IWordService, WordService>()
+                .AddTransient<IRuleService, RuleService>();
         }
     }
 }

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChiLearn.View.Auth.RegisterModelPage"
+             BackgroundColor="#80000000" 
+             Padding="20"
+             Title="RegisterModal">
+    <Frame BackgroundColor="White"
+           CornerRadius="20"
+           Padding="20"
+           WidthRequest="300"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           HasShadow="True">
+
+        <Grid RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Text="Регистрация"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="#F97316"
+                   HorizontalOptions="Center"
+                   Grid.Row="0" />
+
+            <Entry Text="{Binding Name}"
+                   Placeholder="Имя"
+                   BackgroundColor="#fff3e0"
+                   TextColor="#F97316"
+                   Grid.Row="1"/>
+
+            <Entry Text="{Binding Email}"
+                   Placeholder="Email"
+                   Keyboard="Email"
+                   BackgroundColor="#fff3e0"
+                   TextColor="#F97316"
+                   Grid.Row="2"/>
+
+            <Entry Text="{Binding Password}"
+                   Placeholder="Пароль"
+                   IsPassword="True"
+                   BackgroundColor="#fff3e0"
+                   TextColor="#F97316"
+                   Grid.Row="3"/>
+
+            <Button Text="Зарегистрироваться"
+                    Command="{Binding RegisterCommand}"
+                    BackgroundColor="#F97316"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Grid.Row="4"/>
+
+            <Button Text="Закрыть"
+                    Command="{Binding CloseCommand}"
+                    BackgroundColor="#F97316"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Grid.Row="5"/>
+        </Grid>
+    </Frame>
+</ContentPage>

@@ -156,7 +156,6 @@ namespace ChiLearn.View.LessonsView.PracticeView
                     string recognizedText = recognizedSentence.s;
                     Status = $"Вы сказали: {recognizedText}";
 
-                    // Проверка: хотя бы один иероглиф совпал
                     bool matched = SelectedWord.ChiWord.Any(c => recognizedText.Contains(c));
 
                     if (matched)
@@ -168,7 +167,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
                         {
                             _currentIndex = _currentIndex % Words.Count;
                             SelectedWord = Words[_currentIndex];
-                            Progress = _correctAnswersCount / NEED_TO_WIN;
+                            Progress = _correctAnswersCount / (double)NEED_TO_WIN;
                             Status = "Правильно! Переход к следующему слову.";
                         }
                         else

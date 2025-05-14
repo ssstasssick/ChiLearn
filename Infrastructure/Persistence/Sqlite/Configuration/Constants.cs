@@ -20,5 +20,6 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
             //[3] = "Hsk-3-CSV",
 
         };
+        public const string RuleJsonFileName = "grammar_rules.json";
     }
 }

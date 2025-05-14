@@ -10,18 +10,22 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*" Padding="10">
-        
+
         <!-- Кнопки -->
         <VerticalStackLayout>
             <HorizontalStackLayout Grid.Row="0" Spacing="10" Margin="0,0,0,10">
-            <Button Text="Все"
+                <Button Text="Слова"
                     Command="{Binding SetFilterCommand}"
                     CommandParameter="All"
                     BackgroundColor="{Binding IsFilterAllSelected, Converter={StaticResource BoolToColorConverter}}" />
-            <Button Text="Избранное"
+                <Button Text="Избранное"
                     Command="{Binding SetFilterCommand}"
                     CommandParameter="Favorites"
                     BackgroundColor="{Binding IsFilterFavoritesSelected, Converter={StaticResource BoolToColorConverter}}" />
+                <Button Text="Правила"
+                    Command="{Binding ShowRulesCommand}"
+                    CommandParameter="Rules"
+                    BackgroundColor="{Binding IsRulesSection, Converter={StaticResource BoolToColorConverter}}" />
             </HorizontalStackLayout>
 
             <ActivityIndicator 
@@ -37,7 +41,8 @@
         <!-- Прокручиваемая часть -->
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding FilteredWords}"
-                        SelectionMode="None">
+                        SelectionMode="None"
+                        IsVisible="{Binding IsRulesSection, Converter={StaticResource InverseBoolConverter}}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
@@ -71,5 +76,27 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
+        <ContentView Grid.Row="1" IsVisible="{Binding IsRulesSection}">
+            <CollectionView ItemsSource="{Binding Rules}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="5" Padding="15" CornerRadius="15"
+                                BackgroundColor="#eef2ff" HasShadow="True">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.OpenRuleCommand, Source={x:Reference NotebookPageName}}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" TextColor="#1e40af"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ContentView>
+
     </Grid>
 </ContentPage>

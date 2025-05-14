@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ChiLearn.View.LoadingView;
+using Core.Domain.Abstractions.Sevices;
 
 namespace ChiLearn
 {
@@ -8,7 +9,18 @@ namespace ChiLearn
         {
             InitializeComponent();
             UserAppTheme = AppTheme.Light;
-            MainPage = serviceProvider.GetRequiredService<AppShell>();
+            MainPage = new LoadingPage();
+            Task.Run(async () =>
+            {
+                var initializer = serviceProvider.GetRequiredService<IDatabaseInitializer>();
+                await initializer.InitializeAsync();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    MainPage = serviceProvider.GetRequiredService<AppShell>();
+                });
+            });
+
         }
     }
 }

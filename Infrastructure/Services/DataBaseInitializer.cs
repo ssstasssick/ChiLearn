@@ -36,7 +36,7 @@ namespace Infrastructure.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Database initialization failed");
-                throw; // Пробрасываем исключение дальше
+                throw;
             }
 
         }

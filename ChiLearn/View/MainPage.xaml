@@ -26,7 +26,8 @@
                     <Button Text="Регистрация" 
                                 BackgroundColor="#F97316" 
                                 TextColor="White"
-                                FontSize="16"                                
+                                FontSize="16"    
+                                Command="{Binding RegisterButtonCommand}"
                                 CornerRadius="10"
                                 Padding="5"/>
                     <!-- Текст под изображением -->

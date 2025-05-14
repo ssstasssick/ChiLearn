@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace Core.Persistence
 {
-    public interface IRuleRepository
+    public interface ILessonRuleRepository
     {
-        Task<bool> AnyAsync();
-        Task<List<Rule>> GetRules();
-        Task<Rule> Create(Rule rule);
-        Task<Rule?> GetById(int ruleId);
+        Task<LessonRule> AddRuleToLesson(int lessonId, int ruleId);
     }
 }

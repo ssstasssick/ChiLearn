@@ -14,6 +14,10 @@ using ChiLearn.Services;
 using ChiLearn.ViewModel;
 using ChiLearn.View.Notebook;
 using ChiLearn.ViewModel.Notebook;
+using ChiLearn.ViewModel.RuleVM;
+using ChiLearn.View.RuleView;
+using ChiLearn.View.Auth;
+using ChiLearn.ViewModel.Auth;
 
 namespace ChiLearn
 {
@@ -50,9 +54,9 @@ namespace ChiLearn
                 .RegisterInfrastuctureService(infrastuctureConfig)
                 .RegistryCoreServices();
 
-            InitializeDatabase(builder.Build().Services).ConfigureAwait(false);
 
             CopyCsvFilesToAppData().ConfigureAwait(false);
+            CopyJsonFilesToAppData().ConfigureAwait(false);
 
             return builder.Build();
         }
@@ -78,7 +82,9 @@ namespace ChiLearn
                 .AddTransient<MatchingViewModel>()
                 .AddTransient<PronunciationPracticeViewModel>()
                 .AddTransient<MainViewModel>()
-                .AddTransient<NotebookViewModel>();
+                .AddTransient<NotebookViewModel>()
+                .AddTransient<RuleViewModel>()
+                .AddTransient<RegisterViewModel>();
 
 
             return mauiAppBuilder;
@@ -93,27 +99,12 @@ namespace ChiLearn
                 .AddTransient<MatchingPage>()
                 .AddTransient<PronunciationPracticePage>()
                 .AddTransient<MainPage>()
-                .AddTransient<NotebookPage>();
+                .AddTransient<NotebookPage>()
+                .AddTransient<RuleDetailPage>()
+                .AddTransient<RegisterModelPage>();
 
 
             return mauiAppBuilder;
-        }
-
-        private static async Task InitializeDatabase(IServiceProvider services)
-        {
-            try
-            {
-                using var scope = services.CreateScope();
-                var initializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
-                await initializer.InitializeAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Database initialization failed: {ex}");
-#if DEBUG
-                await Application.Current.MainPage.DisplayAlert("Error", $"DB init failed: {ex.Message}", "OK");
-#endif
-            }
         }
 
         public static async Task CopyCsvFilesToAppData()
@@ -133,9 +124,22 @@ namespace ChiLearn
             }
         }
 
+        public static async Task CopyJsonFilesToAppData()
+        {
+            var targetDir = Path.Combine(FileSystem.AppDataDirectory, "Resources", "Raw");
 
+            Directory.CreateDirectory(targetDir);
 
+            var targetPath = Path.Combine(targetDir, Constants.RuleJsonFileName);
+            if (File.Exists(targetPath))
+            {
+                File.Delete(targetPath);
+                using var sourceStream = await FileSystem.OpenAppPackageFileAsync(Constants.RuleJsonFileName);
+                using var targetStream = File.Create(targetPath);
+                await sourceStream.CopyToAsync(targetStream);
+            }
 
+        }
 
     }
 }

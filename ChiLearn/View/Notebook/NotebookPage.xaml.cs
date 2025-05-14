@@ -9,4 +9,13 @@ public partial class NotebookPage : ContentPage
 		InitializeComponent();
 		BindingContext = viewModel;
 	}
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (BindingContext is NotebookViewModel vm)
+        {
+            await vm.Initialize();
+        }
+    }
 }

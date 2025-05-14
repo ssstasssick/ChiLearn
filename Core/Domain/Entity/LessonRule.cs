@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Core.Domain.Entity
 {
-    public class Rule
+    public class LessonRule
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public List<GrammarBlock> Content { get; set; }
+        public int LessonRuleId { get; set; }
+        public int LessonId { get; set; }
+        public int RuleId { get; set; }
     }
 }

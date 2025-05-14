@@ -18,6 +18,9 @@
                     <behaviors:MatchingResultToColorConverter x:Key="MatchingResultToColorConverter" />
                     <behaviors:BoolToShowHideConverter x:Key="BoolToShowHideConverter" />
                     <behaviors:InverseBoolConverter x:Key="InverseBoolConverter" />
+                    <behaviors:GrammarBlockTemplateSelector x:Key="GrammarBlockTemplateSelector" />
+                    <behaviors:EmptyCollectionToBoolConverter x:Key="EmptyCollectionToBoolConverter" />
+                    <behaviors:NullToBoolConverter x:Key="NullToBoolConverter" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

@@ -5,13 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Persistence
+namespace Core.Domain.Abstractions.Sevices
 {
-    public interface IRuleRepository
+    public interface IRuleService
     {
-        Task<bool> AnyAsync();
+        Task<Rule> GetRulesByLevel(int levelId);
+        Task<Rule> GetRuleById(int id);
         Task<List<Rule>> GetRules();
-        Task<Rule> Create(Rule rule);
-        Task<Rule?> GetById(int ruleId);
     }
 }

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ChiLearn.Behaviors"
+             x:Class="ChiLearn.View.RuleView.RuleDetailPage"
+             Title="{Binding SelectedRule.Title}">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:GrammarBlockTemplateSelector x:Key="GrammarTemplateSelector">
+
+                <local:GrammarBlockTemplateSelector.HeaderTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Text}"
+                               FontSize="22"
+                               FontAttributes="Bold"
+                               TextColor="#1d4ed8"
+                               Margin="0,20,0,10"/>
+                    </DataTemplate>
+                </local:GrammarBlockTemplateSelector.HeaderTemplate>
+
+                <local:GrammarBlockTemplateSelector.TextTemplate>
+                    <DataTemplate>
+                        <FlexLayout
+                            Direction="Row"
+                            Wrap="Wrap"
+                            AlignItems="Start"
+                            JustifyContent="Start"
+                            Margin="0,2">
+
+                            <Label
+                                Text="{Binding Text}"
+                                FontSize="16"
+                                LineBreakMode="NoWrap"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Center" />
+                        </FlexLayout>
+                    </DataTemplate>
+                </local:GrammarBlockTemplateSelector.TextTemplate>
+
+                <local:GrammarBlockTemplateSelector.BoldTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Text}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="#111827"
+                               Margin="0,5"/>
+                    </DataTemplate>
+                </local:GrammarBlockTemplateSelector.BoldTemplate>
+
+                <local:GrammarBlockTemplateSelector.ExampleTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#f9fafb"
+               CornerRadius="12"
+               Padding="12"
+               Margin="0,10"
+               BorderColor="#e5e7eb">
+                            <ScrollView Orientation="Horizontal">
+                                <HorizontalStackLayout Spacing="6">
+                                    <Label Text="{Binding Ch}"
+                           IsVisible="{Binding Ch, Converter={StaticResource NullToBoolConverter}}"
+                           FontSize="17"
+                           FontAttributes="Bold"
+                           TextColor="#1e40af"
+                           CharacterSpacing="1.5" />
+
+                                    <Label Text="{Binding Pn}"
+                           IsVisible="{Binding Pn, Converter={StaticResource NullToBoolConverter}}"
+                           FontSize="14"
+                           TextColor="#6b7280"
+                           CharacterSpacing="1" />
+
+                                    <Label Text="{Binding Rus}"
+                           IsVisible="{Binding Rus, Converter={StaticResource NullToBoolConverter}}"
+                           FontSize="14"
+                           TextColor="#374151"
+                           CharacterSpacing="1" />
+                                </HorizontalStackLayout>
+                            </ScrollView>
+                        </Frame>
+                    </DataTemplate>
+                </local:GrammarBlockTemplateSelector.ExampleTemplate>
+
+                <local:GrammarBlockTemplateSelector.TableTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="#e5e7eb"
+                               CornerRadius="8"
+                               Padding="8"
+                               Margin="0,10"
+                               BackgroundColor="#f3f4f6">
+                            <CollectionView ItemsSource="{Binding Rows}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnSpacing="12"
+                                              RowSpacing="6"
+                                              Padding="4">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0" Text="{Binding [0]}" FontSize="14" TextColor="#111827"/>
+                                            <Label Grid.Column="1" Text="{Binding [1]}" FontSize="14" TextColor="#111827"/>
+                                            <Label Grid.Column="2" Text="{Binding [2]}" FontSize="14" TextColor="#111827"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Frame>
+                    </DataTemplate>
+                </local:GrammarBlockTemplateSelector.TableTemplate>
+
+            </local:GrammarBlockTemplateSelector>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    
+    <ContentPage.Content>
+        <Grid>
+            <ScrollView>
+                <CollectionView ItemsSource="{Binding SelectedRule.Content}"
+                            ItemTemplate="{StaticResource GrammarTemplateSelector}"
+                            SelectionMode="None"
+                            Margin="16">
+                </CollectionView>
+            </ScrollView>
+            <ActivityIndicator IsVisible="{Binding IsLoading}" 
+                           IsRunning="{Binding IsLoading}" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Color="#3b82f6"
+                           WidthRequest="50"
+                           HeightRequest="50" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

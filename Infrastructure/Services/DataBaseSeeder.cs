@@ -1,14 +1,17 @@
-﻿using Core.Domain.Abstractions.Sevices;
+﻿using ChiLearn.Infrastructure;
+using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
 using Core.Persistence;
 using Infrastructure.Persistence.Abstractions.Internal;
 using Infrastructure.Persistence.Sqlite.Configuration;
 using Infrastructure.Persistence.Sqlite.Models;
+using Infrastructure.Persistence.Sqlite.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Resources;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Services
@@ -17,22 +20,41 @@ namespace Infrastructure.Services
     {
         private readonly IWordRepository _wordRepository;
         private readonly ILessonWordRepository _lessonWordRepository;
+        private readonly ILessonRuleRepository _lessonRuleRepository;
         private readonly ICsvDataService _csvReaderService;
         private readonly ILessonRepository _lessonRepository;
-        private readonly IInfrastructureMapper<Lesson, LessonModel> _infrastructureMapper;
+        private readonly IRuleRepository _ruleRepository;
+        private readonly IGrammarBlockRepository _grammarBlockRepository;
+        private readonly JsonFileService _jsonFileService;
+
+        private readonly IInfrastructureMapper<Rule, RuleModel> _ruleMapper;
+        private readonly IInfrastructureMapper<GrammarBlock, GrammarBlockModel> _grammarBlockMapper;
 
         public DataBaseSeeder(
         IWordRepository wordRepository,
         ILessonRepository lessonRepository,
+        IRuleRepository ruleRepository,
+        IGrammarBlockRepository grammarBlockRepository,
         ILessonWordRepository lessonWordRepository,
+        ILessonRuleRepository lessonRuleRepository,
         ICsvDataService csvReaderService,
-        IInfrastructureMapper<Lesson, LessonModel> infrastructureMapper)
+        JsonFileService jsonFileService,
+        IInfrastructureMapper<Rule, RuleModel> ruleMapper,
+        IInfrastructureMapper<GrammarBlock, GrammarBlockModel> grammarBlockMapper)
         {
             _wordRepository = wordRepository;
-            _lessonWordRepository = lessonWordRepository;
-            _csvReaderService = csvReaderService;
             _lessonRepository = lessonRepository;
-            _infrastructureMapper = infrastructureMapper;
+            _ruleRepository = ruleRepository;
+            _grammarBlockRepository = grammarBlockRepository;
+
+            _lessonWordRepository = lessonWordRepository;
+            _lessonRuleRepository = lessonRuleRepository;
+
+            _csvReaderService = csvReaderService;
+            _jsonFileService = jsonFileService;
+
+            _ruleMapper = ruleMapper;
+            _grammarBlockMapper = grammarBlockMapper;
         }
 
         public async Task SeedDatabase()
@@ -41,7 +63,8 @@ namespace Infrastructure.Services
             {
                 await SeedWords(level);
                 await SeedLessons(10);
-            }   
+                await SeedGrammar();
+            }
         }
 
         private async Task SeedWords(int hskLevel)
@@ -92,5 +115,53 @@ namespace Infrastructure.Services
                 }
             }
         }
+
+        private async Task SeedGrammar()
+        {
+            try
+            {
+                if (await _ruleRepository.AnyAsync())
+                    return;
+
+                var rules = await _jsonFileService.GetRulesFromJsonAsync();
+                if (rules == null || rules.Count == 0)
+                    return;
+
+                var savedRules = new List<Rule>();
+
+                foreach (var ruleModel in rules)
+                {
+                    var domainRule = _ruleMapper.MapToDomain(ruleModel);
+                    var createdRule = await _ruleRepository.Create(domainRule);
+
+                    savedRules.Add(createdRule);
+
+                    foreach (var block in ruleModel.GrammarBlocks)
+                    {
+                        var blockDomain = _grammarBlockMapper.MapToDomain(block);
+                        blockDomain.RuleId = createdRule.Id;
+                        await _grammarBlockRepository.Create(blockDomain);
+                    }
+                }
+
+                var lessons = await _lessonRepository.GetAll();
+                if (lessons == null || lessons.Count == 0)
+                    return;
+
+                int ruleCount = savedRules.Count;
+                for (int i = 0; i < lessons.Count; i++)
+                {
+                    var lesson = lessons[i];
+                    var rule = savedRules[i % ruleCount];
+                    await _lessonRuleRepository.AddRuleToLesson(lesson.LessonId, rule.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Можно логировать здесь, если нужно
+                throw;
+            }
+        }
+
     }
 }

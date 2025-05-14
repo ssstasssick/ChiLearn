@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core.Domain.Entity;
 
 namespace Core.Persistence
 {
-    internal class IGrammarBlockRepository
+    public interface IGrammarBlockRepository
     {
+        Task<GrammarBlock> Create(GrammarBlock block);
+        Task<List<GrammarBlock>> GetByRuleId(int ruleId);
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChiLearn.View.LoadingView.LoadingPage"
+             Title="LoadingPage">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1A2980" Offset="0.0" />
+            <GradientStop Color="#26D0CE" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="30">
+        <Image x:Name="LogoImage" Source="avatar.jpg" WidthRequest="120" HeightRequest="120" />
+
+        <Label x:Name="LoadingLabel"
+               Text="Загрузка..."
+               FontSize="18"
+               Opacity="0"
+               HorizontalOptions="Center"
+               VerticalOptions="End"
+               Margin="0,0,0,60"
+               TextColor="Black"/>
+
+        <ActivityIndicator IsRunning="True" Color="White" />
+    </StackLayout>
+</ContentPage>

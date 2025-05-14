@@ -19,7 +19,8 @@ namespace ChiLearn.Infrastructure
                 .RegisterPersistence(configuration)
                 .RegisterMappers()
                 .RegisterRepositories()
-                .AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+                .AddTransient<IDatabaseInitializer, DatabaseInitializer>()
+                .AddTransient<JsonFileService>();
                 
         }
 
@@ -35,7 +36,10 @@ namespace ChiLearn.Infrastructure
             return services
                 .AddTransient<IInfrastructureMapper<Word, WordModel>, WordMapper>()
                 .AddTransient<IInfrastructureMapper<Lesson, LessonModel>, LessonMapper>()
-                .AddTransient<IInfrastructureMapper<LessonWord, LessonWordModel>, LessonWordMapper>();
+                .AddTransient<IInfrastructureMapper<LessonWord, LessonWordModel>, LessonWordMapper>()
+                .AddTransient<IInfrastructureMapper<Rule, RuleModel>, RuleMapper>()
+                .AddTransient<IInfrastructureMapper<GrammarBlock, GrammarBlockModel>, GrammarBlockMapper>()
+                .AddTransient<IInfrastructureMapper<LessonRule, LessonRuleModel>, LessonRuleMapper>();
         }
 
         private static IServiceCollection RegisterRepositories(this IServiceCollection services)
@@ -45,7 +49,11 @@ namespace ChiLearn.Infrastructure
                 .AddTransient<ILessonRepository, LessonRepository>()
                 .AddTransient<ILessonWordRepository, LessonWordRepository>()
                 .AddTransient<ICsvDataService, CsvFileService>()
-                .AddTransient<IDataBaseSeeder, DataBaseSeeder>();
+                .AddTransient<IDataBaseSeeder, DataBaseSeeder>()
+                .AddTransient<IRuleRepository, RuleRepository>()
+                .AddTransient<IGrammarBlockRepository, GrammarBlockRepository>()
+                .AddTransient<ILessonRuleRepository, LessonRuleRepository>()
+                .AddTransient<IGrammarBlockRepository, GrammarBlockRepository>();
         }
     }
 }

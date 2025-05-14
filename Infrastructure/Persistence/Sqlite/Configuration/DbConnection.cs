@@ -55,6 +55,8 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
             _ = await _database.CreateTableAsync<LessonWordModel>();
             _ = await _database.CreateTableAsync<RuleModel>();
             _ = await _database.CreateTableAsync<LessonRuleModel>();
+            _ = await _database.CreateTableAsync<GrammarBlockModel>();
+            _ = await _database.CreateTableAsync<RuleModel>();
         }
 
         private string GetDatabasePath(string filename)
