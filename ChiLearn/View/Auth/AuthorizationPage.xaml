@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ChiLearn.View.Auth.AuthorizationPage"
+             Title="AuthorizationView"
+             BackgroundColor="#80000000" 
+             Padding="20">
+    <Frame BackgroundColor="White"
+           CornerRadius="20"
+           Padding="20"
+           WidthRequest="300"
+           HorizontalOptions="Center"
+           VerticalOptions="Center"
+           HasShadow="True">
+
+        <Grid RowSpacing="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Label Text="Авторизация"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="#F97316"
+                   HorizontalOptions="Center"
+                   Grid.Row="0" />
+
+            <Entry Text="{Binding Username}"
+                   Placeholder="Логин"
+                   BackgroundColor="#fff3e0"
+                   TextColor="#F97316"
+                   Grid.Row="1"/>
+
+            <Entry Text="{Binding Password}"
+                   Placeholder="Пароль"
+                   IsPassword="True"
+                   BackgroundColor="#fff3e0"
+                   TextColor="#F97316"
+                   Grid.Row="2"/>
+
+            <Button Text="Войти"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="#F97316"
+                    TextColor="White"
+                    CornerRadius="10"
+                    Grid.Row="3"/>
+
+            <Button Text="Закрыть"
+                    Command="{Binding CloseCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="#F97316"
+                    Grid.Row="4"/>
+        </Grid>
+
+    </Frame>
+</ContentPage>

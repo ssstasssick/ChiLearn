@@ -1,6 +1,7 @@
 ﻿using ChiLearn.View.LoadingView;
 using Core.Domain.Abstractions.Sevices;
 
+
 namespace ChiLearn
 {
     public partial class App : Application

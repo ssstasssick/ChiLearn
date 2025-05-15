@@ -18,6 +18,7 @@ using ChiLearn.ViewModel.RuleVM;
 using ChiLearn.View.RuleView;
 using ChiLearn.View.Auth;
 using ChiLearn.ViewModel.Auth;
+using System.Net;
 
 namespace ChiLearn
 {
@@ -84,7 +85,8 @@ namespace ChiLearn
                 .AddTransient<MainViewModel>()
                 .AddTransient<NotebookViewModel>()
                 .AddTransient<RuleViewModel>()
-                .AddTransient<RegisterViewModel>();
+                .AddTransient<RegisterViewModel>()
+                .AddTransient<AuthorizationViewModel>();
 
 
             return mauiAppBuilder;
@@ -101,7 +103,8 @@ namespace ChiLearn
                 .AddTransient<MainPage>()
                 .AddTransient<NotebookPage>()
                 .AddTransient<RuleDetailPage>()
-                .AddTransient<RegisterModelPage>();
+                .AddTransient<RegisterModelPage>()
+                .AddTransient<AuthorizationPage>();
 
 
             return mauiAppBuilder;
@@ -131,9 +134,8 @@ namespace ChiLearn
             Directory.CreateDirectory(targetDir);
 
             var targetPath = Path.Combine(targetDir, Constants.RuleJsonFileName);
-            if (File.Exists(targetPath))
+            if (!File.Exists(targetPath))
             {
-                File.Delete(targetPath);
                 using var sourceStream = await FileSystem.OpenAppPackageFileAsync(Constants.RuleJsonFileName);
                 using var targetStream = File.Create(targetPath);
                 await sourceStream.CopyToAsync(targetStream);

@@ -14,6 +14,8 @@ namespace Core.Domain.Abstractions.Sevices
         Task UpdateLesson(Lesson lesson);
         Task<Lesson?> GetLastCompletedLessonAsync();
         Task<int> GetCountOfLessonsByHskLevel(int hskLvl);
+        Task UpdateLastLevel(int levelNum);
+        Task ResetCompletedLevels();
 
 
     }

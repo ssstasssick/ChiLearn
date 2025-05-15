@@ -1,4 +1,5 @@
 ﻿using ChiLearn.Abstractions;
+using ChiLearn.Models.User;
 using ChiLearn.Services;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
@@ -6,6 +7,7 @@ using Core.Domain.Services;
 using Plugin.Maui.Audio;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -114,6 +116,42 @@ namespace ChiLearn.View.LessonsView.PracticeView
             }
         }
 
+        private async Task UpdateProgress()
+        {
+            var user = await UserDataService.LoadAsync();
+            user.LastLevelNum = CurrentLesson.LessonNum;
+            await UserDataService.SaveAsync(user);
+            
+            if(user.isAuth.Equals(true)) await SendUpdateRequest(user);
+        }
+
+        private async Task SendUpdateRequest(UserDataJson user)
+        {
+            var updateRequest = new UpdateLessonRequest
+            {
+                Name = user.Name,
+                LessonNum = user.LastLevelNum
+            };
+
+            try
+            {
+                // Отправляем POST-запрос на сервер
+                var response = await HttpClientSingleton.Instance.PostAsJsonAsync(
+                    "http://10.0.2.2:5065/api/Auth/update",
+                    updateRequest);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    await Application.Current.MainPage.DisplayAlert("Ошибка", $"Не удалось обновить прогресс: {content}", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Ошибка", $"Сетевая ошибка: {ex.Message}", "OK");
+            }
+        }
+
         public async Task StartRecordingAsync()
         {
             if (!await CheckAndRequestPermissionsAsync())
@@ -178,6 +216,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
                         if (_correctAnswersCount >= NEED_TO_WIN)
                         {
                             CompletedPractice = CurrentLesson.CompletedPractice = true;
+                            await UpdateProgress();
                             Status = "Практика завершена!";
                         }
                     }

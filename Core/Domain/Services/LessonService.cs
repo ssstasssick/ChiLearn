@@ -1,6 +1,7 @@
 ﻿using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
 using Core.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,6 +64,36 @@ namespace Core.Domain.Services
             return allLessons
                 .Where(all => all.HskLevel.Equals(hskLvl))
                 .Count();
+        }
+
+        public async Task UpdateLastLevel(int levelNum)
+        {
+            var allLessons = await _lessonRepository.GetAll();
+
+            var lessonsToUpdate = allLessons
+                .Where(l => l.LessonNum < levelNum)
+                .ToList();
+
+            foreach (var lesson in lessonsToUpdate)
+            {
+                lesson.CompletedTheory = true;
+                lesson.CompletedPractice = true;
+                await _lessonRepository.Update(lesson);
+            }
+        }
+
+        public async Task ResetCompletedLevels()
+        {
+            var allLessons = await _lessonRepository.GetAll();
+
+            foreach (var lesson in allLessons)
+            {
+                lesson.CompletedTheory = false;
+                lesson.CompletedPractice = false;
+                await _lessonRepository.Update(lesson);
+            }
+
+            
         }
     }
 }

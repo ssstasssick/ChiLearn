@@ -22,6 +22,7 @@ namespace ChiLearn
             Routing.RegisterRoute("PronunciationPracticePage", typeof(PronunciationPracticePage));
             Routing.RegisterRoute("RuleDetailPage", typeof(RuleDetailPage));
             Routing.RegisterRoute("RegisterModelPage", typeof(RegisterModelPage));
+            Routing.RegisterRoute("AuthorizationPage", typeof(AuthorizationPage));
 
         }
     }

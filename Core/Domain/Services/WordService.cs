@@ -22,5 +22,15 @@ namespace Core.Domain.Services
             await _wordRepository.Update(word);
         }
 
+        public async Task ResetFavorites()
+        {
+            var favoritesWords = (await _wordRepository.GetAll())
+                .Where(w => w.IsFavorite.Equals(true));
+            foreach (var word in favoritesWords)
+            {
+                word.IsFavorite = false;
+                await _wordRepository.Update(word);
+            }
+        }
     }
 }

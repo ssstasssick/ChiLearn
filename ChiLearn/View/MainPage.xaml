@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ChiLearn.View.MainPage"
              Shell.NavBarIsVisible="False"
-             BackgroundColor="#F9FAFB">
+             BackgroundColor="Transparent">
 
     <VerticalStackLayout Padding="20" Spacing="30">
 
@@ -23,16 +23,62 @@
                        Aspect="AspectFill"
                        Scale="1.2"/>
                     </Frame>
-                    <Button Text="Регистрация" 
+                    <Frame BackgroundColor="Transparent" 
+                           Padding="0" 
+                           HasShadow="False"
+                           HorizontalOptions="Fill"
+                           BorderColor="Transparent">
+                        <Grid ColumnDefinitions="*,1,*">
+                            <!-- Кнопка Авторизации -->
+                            <Button Grid.Column="0"
+                                Text="Авторизация" 
                                 BackgroundColor="#F97316" 
                                 TextColor="White"
                                 FontSize="16"    
-                                Command="{Binding RegisterButtonCommand}"
+                                IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBoolConverter}}"
+                                Command="{Binding AuthButtonCommand}"
                                 CornerRadius="10"
-                                Padding="5"/>
+                                Padding="5"
+                                Margin="0,0,15,0"/>
+                            <!-- Правое поле 15 -->
+
+                            <!-- Вертикальный разделитель -->
+                            <BoxView Grid.Column="1" 
+                                 BackgroundColor="#cccccc" 
+                                 WidthRequest="2"
+                                 VerticalOptions="Fill"
+                                 IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBoolConverter}}"
+                                 Margin="0,5"/>
+                            <!-- Уменьшенные отступы самой линии -->
+
+                            <!-- Кнопка Регистрации -->
+                            <Button Grid.Column="2"
+                                Text="Регистрация" 
+                                BackgroundColor="#f1a94c" 
+                                TextColor="White"
+                                FontSize="16"    
+                                Command="{Binding RegisterButtonCommand}"
+                                IsVisible="{Binding IsLoggedIn, Converter={StaticResource InverseBoolConverter}}"
+                                CornerRadius="10"
+                                Padding="5"
+                                Margin="15,0,0,0"/>
+                            <!-- Левое поле 15 -->
+                            <Button Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    Text="Выйти" 
+                                    BackgroundColor="#F97316" 
+                                    TextColor="White"
+                                    FontSize="16"    
+                                    IsVisible="{Binding IsLoggedIn}"
+                                    Command="{Binding LogOutCommand}"
+                                    CornerRadius="10"
+                                    Padding="5"
+                                    Margin="0,0,15,0"/>
+                        </Grid>
+                    </Frame>
                     <!-- Текст под изображением -->
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                        <Label Text="MyName!" 
+                        <Label Text="{Binding CurrentUser.Name}" 
                        FontSize="24" 
                        FontAttributes="Bold"
                        HorizontalOptions="Center"/>

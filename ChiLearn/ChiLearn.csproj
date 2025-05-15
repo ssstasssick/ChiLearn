@@ -81,6 +81,9 @@
 	  <Compile Update="Resources\Themes\LightTheme.xaml.cs">
 	    <DependentUpon>LightTheme.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="View\Auth\AuthorizationPage.xaml.cs">
+	    <DependentUpon>AuthorizationPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="View\Auth\RegisterModelPage.xaml.cs">
 	    <DependentUpon>RegisterModelPage.xaml</DependentUpon>
 	  </Compile>
@@ -91,6 +94,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Resources\Themes\LightTheme.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\Auth\AuthorizationPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\Auth\RegisterModelPage.xaml">

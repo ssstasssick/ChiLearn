@@ -1,8 +1,12 @@
 ﻿using ChiLearn.Abstractions;
+using Core.Domain.Abstractions.Sevices;
+using Core.Domain.Entity;
+using Core.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -36,8 +40,12 @@ namespace ChiLearn.ViewModel.Auth
         public ICommand RegisterCommand { get; }
         public ICommand CloseCommand { get; }
 
-        public RegisterViewModel()
+        private readonly ILessonService _lessonService;
+
+        public RegisterViewModel(ILessonService lessonService)
         {
+            _lessonService = lessonService;
+
             RegisterCommand = new Command(OnRegister);
             CloseCommand = new Command(OnClose);
         }
@@ -50,9 +58,37 @@ namespace ChiLearn.ViewModel.Auth
                 return;
             }
 
-            // Регистрация (здесь — заглушка)
-            await Application.Current.MainPage.DisplayAlert("Успех", "Вы успешно зарегистрированы!", "OK");
-            await Shell.Current.Navigation.PopModalAsync();
+            var lastLesson = await _lessonService.GetLastCompletedLessonAsync();
+            var lastLevelNum = lastLesson is not null ? lastLesson.LessonNum : 1;
+
+            var registerRequest = new RegisterRequest
+            {
+                Username = Name,
+                Email = Email,
+                Password = Password,
+                LessonNum = lastLevelNum,
+            };
+
+            try
+            {
+                var response = await HttpClientSingleton.Instance.PostAsJsonAsync(
+                                    "http://10.0.2.2:5065/api/Auth/register",
+                                    registerRequest);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Успех", "Вы успешно зарегистрированы!\nТеперь пройдите авторизацию.", "OK");
+                    await Shell.Current.Navigation.PopModalAsync();
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Ошибка", "Регистрация не удалась. Попробуйте снова.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Ошибка", $"Произошла ошибка: {ex.Message}", "OK");
+            }
         }
 
         private async void OnClose()

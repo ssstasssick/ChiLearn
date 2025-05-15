@@ -10,5 +10,6 @@ namespace Core.Domain.Abstractions.Sevices
     public interface IWordService
     {
         Task ChangeWordFavoritesState(int id);
+        Task ResetFavorites();
     }
 }
