@@ -62,14 +62,14 @@ namespace Infrastructure.Services
             for (int level = 1; level <= Constants.HskCsvFileName.Count; level++)
             {
                 await SeedWords(level);
-                await SeedLessons(10);
-                await SeedGrammar();
+                await SeedLessons(10, level);
             }
+            await SeedGrammar();
         }
 
         private async Task SeedWords(int hskLevel)
         {
-            if (await _wordRepository.AnyAsync() is false)
+            if (await _wordRepository.AnyAsync(hskLevel) is false)
             {
                 var words = _csvReaderService.GetWordsFromCsv(hskLevel);
 
@@ -92,26 +92,24 @@ namespace Infrastructure.Services
             }
         }
 
-        private async Task SeedLessons(int wordsInLesson)
+        private async Task SeedLessons(int wordsInLesson, int hskLevel)
         {
-            if (await _lessonRepository.AnyAsync() is false)
+            if (await _lessonRepository.AnyAsync(hskLevel) is false)
             {
-                for (int hskLevel = 1; hskLevel <= Constants.HskCsvFileName.Count; hskLevel++)
-                {
-                    var words = await _wordRepository.GetWordsByHskLevel(hskLevel);
-                    var wordIds = words.Select(w => w.WordId).ToList();
+                var words = await _wordRepository.GetWordsByHskLevel(hskLevel);
+                var allLessonCount = (await _lessonRepository.GetAll()).Count;
+                var wordIds = words.Select(w => w.WordId).ToList();
 
-                    for (int i = 0; i < wordIds.Count; i += wordsInLesson)
+                for (int i = 0; i < wordIds.Count; i += wordsInLesson)
+                {
+                    var lesson = new Lesson
                     {
-                        var lesson = new Lesson
-                        {
-                            HskLevel = hskLevel,
-                            LessonNum = i / wordsInLesson + 1,
-                            Description = $"Слова {i + 1}-{Math.Min(i + wordsInLesson, wordIds.Count)} уровня HSK {hskLevel}"
-                        };
-                        lesson = await _lessonRepository.Create(lesson);
-                        await _lessonWordRepository.AddWordsToLesson(lesson.LessonId, wordIds.Skip(i).Take(wordsInLesson));
-                    }
+                        HskLevel = hskLevel,
+                        LessonNum = i / wordsInLesson + allLessonCount + 1,
+                        Description = $"Слова {i + 1}-{Math.Min(i + wordsInLesson, wordIds.Count)} уровня HSK {hskLevel}"
+                    };
+                    lesson = await _lessonRepository.Create(lesson);
+                    await _lessonWordRepository.AddWordsToLesson(lesson.LessonId, wordIds.Skip(i).Take(wordsInLesson));
                 }
             }
         }
@@ -158,7 +156,6 @@ namespace Infrastructure.Services
             }
             catch (Exception ex)
             {
-                // Можно логировать здесь, если нужно
                 throw;
             }
         }

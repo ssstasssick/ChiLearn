@@ -28,7 +28,7 @@ namespace ChiLearn.Services
             if (_recorder != null && _recorder.IsRecording)
             {
                 await _recorder.StopAsync();
-            }
+            }           
 
             return _tempFilePath;
         }

@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Diagnostics;
+using System.Net;
 
 namespace ChiLearn.Services
 {
@@ -46,6 +47,17 @@ namespace ChiLearn.Services
                 var fileContent = new ByteArrayContent(fileBytes);
                 content.Add(fileContent, "file", Path.GetFileName(filePath));
                 content.Add(new StringContent(language), "lang");
+
+                try
+                {
+                    var hostEntry = await Dns.GetHostEntryAsync("api.speechflow.io");
+                    if (hostEntry.AddressList.Length == 0)
+                        throw new Exception("DNS не может разрешить адрес");
+                }
+                catch (Exception dnsEx)
+                {
+                    throw new Exception($"Ошибка DNS: {dnsEx.Message}");
+                }
 
                 var response = await _client.PostAsync(
                     "https://api.speechflow.io/asr/file/v1/create",

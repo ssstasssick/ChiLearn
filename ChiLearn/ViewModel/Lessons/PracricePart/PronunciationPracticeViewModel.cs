@@ -26,7 +26,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
         private double _progress;
 
 
-        private string _status = "Готов к записи";
+        private string _status = "Зажмите для записи";
         private bool _completedPractice;
 
         public bool CompletedPractice
@@ -135,7 +135,6 @@ namespace ChiLearn.View.LessonsView.PracticeView
 
             try
             {
-                // Отправляем POST-запрос на сервер
                 var response = await HttpClientSingleton.Instance.PostAsJsonAsync(
                     "http://10.0.2.2:5065/api/Auth/update",
                     updateRequest);
@@ -171,12 +170,49 @@ namespace ChiLearn.View.LessonsView.PracticeView
             }
         }
 
+        string GetWavFormatDetails(string path)
+        {
+            using var fs = File.OpenRead(path);
+            using var reader = new BinaryReader(fs);
+
+            reader.BaseStream.Position = 20; // Позиция параметров формата
+            var audioFormat = reader.ReadInt16(); // 1 = PCM
+            var channels = reader.ReadInt16();
+            var sampleRate = reader.ReadInt32();
+            var byteRate = reader.ReadInt32();
+            var blockAlign = reader.ReadInt16();
+            var bitsPerSample = reader.ReadInt16();
+
+            return $"Format: {audioFormat} (1=PCM), Channels: {channels}, " +
+                   $"SampleRate: {sampleRate}Hz, Bits: {bitsPerSample}";
+        }
+
+        private void LogFileInfo(string filePath)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(filePath);
+                Debug.WriteLine($"Информация о файле:");
+                Debug.WriteLine($"- Путь: {fileInfo.FullName}");
+                Debug.WriteLine($"- Размер: {fileInfo.Length} байт");
+                Debug.WriteLine($"- Создан: {fileInfo.CreationTime}");
+                Debug.WriteLine($"- Последнее изменение: {fileInfo.LastWriteTime}");
+                Debug.WriteLine($"- Атрибуты: {fileInfo.Attributes}");
+                Debug.WriteLine(GetWavFormatDetails(filePath));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка при проверке файла: {ex.Message}");
+            }
+        }
+
         public async Task StopRecordingAsync()
         {
             try
             {
                 Status = "Остановка...";
                 var filePath = await _recorder.StopAndGetAudioPathAsync();
+                LogFileInfo(filePath);
 
                 if (!File.Exists(filePath))
                 {
@@ -257,14 +293,14 @@ namespace ChiLearn.View.LessonsView.PracticeView
                 }
                 else
                 {
-                    Console.WriteLine("Исходный файл не найден.");
+                    Debug.WriteLine("Исходный файл не найден.");
                     return null;
                 }
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ошибка при копировании файла: " + ex.Message);
+                Debug.WriteLine("Ошибка при копировании файла: " + ex.Message);
                 return null;
             }
         }

@@ -20,13 +20,13 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
             _mapper = mapper;
         }
 
-        public async Task<bool> AnyAsync()
+        public async Task<bool> AnyAsync(int hskLevel)
         {
             await _connection.Init();
 
             var exists = await _connection.Database
                 .Table<LessonModel>()
-                .Take(1)
+                .Where(l => l.HskLevel.Equals(hskLevel))
                 .CountAsync();
 
             return exists > 0;

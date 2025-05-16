@@ -9,8 +9,9 @@ namespace Core.Domain.Abstractions.Sevices
 {
     public interface IRuleService
     {
-        Task<Rule> GetRulesByLevel(int levelId);
+        Task<Rule> GetRuleByLevel(int lessonId);
         Task<Rule> GetRuleById(int id);
         Task<List<Rule>> GetRules();
+        Task<List<Rule>> GetLearnedRules();
     }
 }

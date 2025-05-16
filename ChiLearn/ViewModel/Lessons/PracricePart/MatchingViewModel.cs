@@ -1,27 +1,35 @@
 ﻿using ChiLearn.Abstractions;
 using ChiLearn.Models;
+using ChiLearn.Models.User;
+using ChiLearn.Services;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
+using Core.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http.Json;
+using System.Net.NetworkInformation;
 using System.Windows.Input;
 
 namespace ChiLearn.View.LessonsView.PracticeView
 {
     public class MatchingViewModel : BaseNotifyObject
     {
-        private readonly ILessonService _lessonService;
+
         private List<Word> _wordSequence = new();
         private int _currentIndex = 0;
         private List<string> _shuffledRuWords;
+
+        private ILessonService _lessonService;
 
         public MatchingViewModel(ILessonService lessonService)
         {
             _lessonService = lessonService;
 
+            CompleteLessonCommand = new Command(async () => await OnGoToLessonPage());
             CheckMatchingCommand = new Command(OnSubmitMatching);
             WordClickCommand = new Command<string>(OnWordClick);
             SubmitMatchingCommand = new Command(OnSubmitMatching);
@@ -37,10 +45,9 @@ namespace ChiLearn.View.LessonsView.PracticeView
         public ObservableCollection<string> Mistakes { get; } = new();
         public Dictionary<string, bool> MatchingResults { get; } = new();
 
-        public string CurrentRuWord =>
-    _shuffledRuWords != null && _currentIndex < _shuffledRuWords.Count
-        ? _shuffledRuWords[_currentIndex]
-        : null;
+        public string? CurrentRuWord => _shuffledRuWords != null && _currentIndex < _shuffledRuWords.Count
+                                            ? _shuffledRuWords[_currentIndex]
+                                            : null;
         public bool ShowCheck => _currentIndex >= _wordSequence.Count;
 
         public ICommand WordClickCommand { get; }
@@ -51,6 +58,18 @@ namespace ChiLearn.View.LessonsView.PracticeView
         public ICommand GoToPronunciationCommand { get; }
         public ICommand CheckMatchingCommand { get; }
         public ICommand SelectedWordClickCommand { get; }
+        public ICommand CompleteLessonCommand { get; }
+
+        public bool _isInternetConn;
+        public bool IsInternetConn
+        {
+            get => _isInternetConn;
+            private set
+            {
+                SetProperty(ref _isInternetConn, value);
+                _lessonService.UpdateLesson(TLesson);
+            }
+        }
 
         private Lesson _tLesson;
         public Lesson TLesson
@@ -62,7 +81,7 @@ namespace ChiLearn.View.LessonsView.PracticeView
         private bool _isMatchingSuccessful;
         public bool IsMatchingSuccessful
         {
-            get => _isMatchingSuccessful;
+            get => _isMatchingSuccessful && IsInternetConn;
             set => SetProperty(ref _isMatchingSuccessful, value);
         }
 
@@ -186,7 +205,10 @@ namespace ChiLearn.View.LessonsView.PracticeView
                 }
             }
 
-            if(allCorrect) Shell.Current.GoToAsync($"mainpage?lessonCompleted=true");
+            if (allCorrect && (IsInternetConn = CheckInternetConnectionAsync().Result))
+            {
+                _ = UpdateProgress();
+            }
 
             IsMatchingSuccessful = allCorrect;
             ShowRetry = !allCorrect;
@@ -223,6 +245,48 @@ namespace ChiLearn.View.LessonsView.PracticeView
             OnPropertyChanged(nameof(MatchingResults));
             OnPropertyChanged(nameof(Mistakes));
             OnPropertyChanged(nameof(ShowCheck));
+        }
+
+        private async Task UpdateProgress()
+        {
+            var user = await UserDataService.LoadAsync();
+            user.LastLevelNum = TLesson.LessonNum;
+            await UserDataService.SaveAsync(user);
+        }
+
+        public static async Task<bool> CheckInternetConnectionAsync()
+        {
+            try
+            {
+                using var ping = new Ping();
+                var pingTask = ping.SendPingAsync("8.8.4.4", 1500);
+
+                using var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(2);
+                var httpTask = client.GetAsync("http://www.gstatic.com/generate_204");
+
+                var completedTask = await Task.WhenAny(pingTask, httpTask);
+
+                return completedTask == pingTask
+                    ? pingTask.Result.Status == IPStatus.Success
+                    : httpTask.Result.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task OnGoToLessonPage()
+        {
+            try
+            {
+                await Shell.Current.GoToAsync("LessonPage");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex.Message}");
+            }
         }
 
         private async void OnGoToTheory()

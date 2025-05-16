@@ -13,15 +13,18 @@ public partial class LessonsPage : ContentPage
 
 		BindingContext = _viewModel = viewModel;
 
-	}
+        viewModel.ScrollToLessonAction = (lesson) =>
+        {
+            LessonsCollectionView.ScrollTo(lesson, position: ScrollToPosition.Start, animate: false);
+        };
+
+    }
 
 	protected override async void OnAppearing()
 	{
 		base.OnAppearing();
-		if (_viewModel.Lessons == null || _viewModel.Lessons.Count == 0 )
-		{
-			await _viewModel.LoadLessonsAsync();
-		}
+		await _viewModel.LoadLessonsAsync();
 	}
+
 
 }

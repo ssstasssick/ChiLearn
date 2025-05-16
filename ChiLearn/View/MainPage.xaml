@@ -89,17 +89,6 @@
                     </VerticalStackLayout>
                 </VerticalStackLayout>
 
-                <!-- Кнопки в правом верхнем углу -->
-                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start" Spacing="10">
-                    <!--<Button Text="Выход" 
-                    BackgroundColor="Transparent" 
-                    TextColor="#F97316"
-                    CornerRadius="10"
-                    Padding="10,5"
-                    Command="OnLogoutClicked"/>-->
-
-
-                </HorizontalStackLayout>
             </Grid>
         </Frame>
 
@@ -107,7 +96,12 @@
             <HorizontalStackLayout Spacing="30" HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="25" HorizontalOptions="Center">
                     <Label Text="HSK Уровень" FontSize="14" TextColor="#6B7280" HorizontalOptions="Center"/>
-                    <Label Text="{Binding HskLevel}" FontSize="36" FontAttributes="Bold" TextColor="#2563EB"/>
+                    <Label Text="{Binding HskLevel}"
+                           FontSize="36" 
+                           FontAttributes="Bold" 
+                           TextColor="#2563EB" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
                 </VerticalStackLayout>
 
                 <BoxView WidthRequest="1" BackgroundColor="#D1D5DB" HeightRequest="50"/>
@@ -117,21 +111,28 @@
                                FontSize="14"
                                TextColor="#6B7280"
                                HorizontalOptions="Center"/>
-                    <Label Text="{Binding NumOfLastLesson}" FontSize="36" FontAttributes="Bold" TextColor="#10B981"/>
+                    <Label Text="{Binding NumOfLastLesson}"
+                           FontSize="36" 
+                           FontAttributes="Bold" 
+                           TextColor="#10B981" 
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
                 </VerticalStackLayout>
             </HorizontalStackLayout>
         </Frame>
 
         <!-- Прогресс -->
-        <Frame BackgroundColor="White" CornerRadius="16" Padding="20" HasShadow="True">
+        <Frame BackgroundColor="White" CornerRadius="16" Padding="20" HasShadow="True" Margin="0, 20, 0, 0">
             <VerticalStackLayout Spacing="15">
-                <Label Text="Ваш прогресс" FontSize="20" FontAttributes="Bold"/>
+                <HorizontalStackLayout Spacing="15">
+                    <Label Text="Ваш прогресс" FontSize="20" FontAttributes="Bold"/>
+                <Label Text="{Binding ProgressBarPercent, StringFormat='{0}%'}" FontSize="20" TextColor="#6B7280" HorizontalOptions="Center"/>
+                </HorizontalStackLayout>
                 <ProgressBar Progress="{Binding PercentCompletedLevels}"
                      HeightRequest="10"
                      BackgroundColor="#E5E7EB"
                      ProgressColor="#34D399"/>
-                <Label Text="{Binding ProgressBarPercent, StringFormat='Прогресс: {0}%'}" FontSize="14" TextColor="#6B7280"/>
-                <!-- Привяжи к проценту -->
+                
             </VerticalStackLayout>
         </Frame>
         <!-- TODO: Добавь здесь меню или переход к урокам -->

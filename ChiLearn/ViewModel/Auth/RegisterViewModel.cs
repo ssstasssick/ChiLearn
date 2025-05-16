@@ -59,7 +59,7 @@ namespace ChiLearn.ViewModel.Auth
             }
 
             var lastLesson = await _lessonService.GetLastCompletedLessonAsync();
-            var lastLevelNum = lastLesson is not null ? lastLesson.LessonNum : 1;
+            var lastLevelNum = lastLesson is not null ? lastLesson.LessonNum + 1 : 1;
 
             var registerRequest = new RegisterRequest
             {

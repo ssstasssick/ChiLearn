@@ -28,6 +28,13 @@
                     BackgroundColor="{Binding IsRulesSection, Converter={StaticResource BoolToColorConverter}}" />
             </HorizontalStackLayout>
 
+            <SearchBar Grid.Row="0"
+               Placeholder="Искать в книге знаний..."
+               HorizontalTextAlignment="Center"
+               Text="{Binding SearchText}"
+               SearchCommand="{Binding SearchCommand}"
+               Margin="0,0,0,10"/>
+            
             <ActivityIndicator 
         IsRunning="{Binding IsLoading}" 
         IsVisible="{Binding IsLoading}" 

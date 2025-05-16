@@ -1,4 +1,5 @@
-﻿using ChiLearn.Abstractions;
+﻿using Android.App;
+using ChiLearn.Abstractions;
 using ChiLearn.Models.Word;
 using ChiLearn.Services;
 using Core.Domain.Abstractions.Sevices;
@@ -28,8 +29,22 @@ public class NotebookViewModel : BaseNotifyObject
     private string _activeFilter = "All";
     private string _currentSection = "Words"; // или "Rules"
 
+    private List<Rule> completedRules;
+
     private bool _isWordsEmpty;
     private bool _IsRulesEmpty;
+
+    private string _searchText;
+    public string SearchText
+    {
+        get => _searchText;
+        set
+        {
+            SetProperty(ref _searchText, value);
+            FilterWords();
+        }
+    }
+
     public bool IsLoading
     {
         get => _isLoading;
@@ -43,7 +58,7 @@ public class NotebookViewModel : BaseNotifyObject
         set => SetProperty(ref _isWordsEmpty, value);
     }
 
-    public bool IsRulesEmpty 
+    public bool IsRulesEmpty
     {
         get => _IsRulesEmpty;
         set => SetProperty(ref _IsRulesEmpty, value);
@@ -93,12 +108,12 @@ public class NotebookViewModel : BaseNotifyObject
         {
             _currentSection = "Words";
             _activeFilter = filter;
-            
+
             OnPropertyChanged(nameof(IsRulesSection));
             OnPropertyChanged(nameof(IsFilterAllSelected));
             OnPropertyChanged(nameof(IsFilterFavoritesSelected));
             OnPropertyChanged(nameof(IsRulesSelected));
-            
+
 
             ApplyFilter();
         });
@@ -124,6 +139,7 @@ public class NotebookViewModel : BaseNotifyObject
         IsLoading = true;
 
         var learnedWords = await _notebookService.GetLearnedWords();
+        await LoadRulesAsync();
 
         LearnedWords.Clear();
         foreach (var w in learnedWords)
@@ -140,7 +156,7 @@ public class NotebookViewModel : BaseNotifyObject
             });
         }
 
-        ApplyFilter();
+        await ApplyFilter();
 
         IsLoading = false;
     }
@@ -149,9 +165,9 @@ public class NotebookViewModel : BaseNotifyObject
     {
         IsLoading = true;
 
-        var rules = await _ruleService.GetRules();
+        var rules = completedRules = await _ruleService.GetLearnedRules();
         Rules.Clear();
-        foreach (var rule in rules.Take(10))
+        foreach (var rule in rules)
             Rules.Add(rule);
 
         IsLoading = false;
@@ -171,9 +187,61 @@ public class NotebookViewModel : BaseNotifyObject
         foreach (var word in filtered)
             FilteredWords.Add(word);
 
-        
+
 
         IsLoading = false;
+    }
+
+    private void FilterWords()
+    {
+        if (_currentSection == "Words")
+            {
+            // Фильтрация слов
+            if (LearnedWords == null) return;
+
+            var filteredWords = LearnedWords.AsEnumerable();
+
+            if (IsFilterFavoritesSelected)
+            {
+                filteredWords = filteredWords.Where(w => w.IsFavorite);
+            }
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                var searchQuery = SearchText.Trim().ToLower();
+                filteredWords = filteredWords.Where(w =>
+                    w.RuWord?.ToLower().Contains(searchQuery) == true ||
+                    w.ChiWord?.ToLower().Contains(searchQuery) == true ||
+                    w.Pinyin?.ToLower().Contains(searchQuery) == true);
+            }
+
+            FilteredWords.Clear();
+            foreach (var word in filteredWords)
+            {
+                FilteredWords.Add(word);
+            }
+        }        
+        else
+        {
+            // Фильтрация правил
+            if (completedRules == null) return;
+
+            var filteredRules = completedRules.AsEnumerable();
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                var searchQuery = SearchText.Trim().ToLower();
+                filteredRules = filteredRules.Where(r =>
+                    r.Title?.ToLower().Contains(searchQuery) == true);
+            }
+
+            Rules.Clear();
+            foreach (var rule in filteredRules)
+            {
+                Rules.Add(rule);
+            }
+        }
+
     }
 
     private async Task PlayAudio(DirectWord directWord)

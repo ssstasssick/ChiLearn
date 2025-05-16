@@ -10,5 +10,6 @@ namespace Core.Persistence
     public interface ILessonRuleRepository
     {
         Task<LessonRule> AddRuleToLesson(int lessonId, int ruleId);
+        Task<int> GetRuleIdByLessonId(int lessonId);
     }
 }

@@ -39,5 +39,20 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
             return _mapper.MapToDomain(lessonModel);
 
         }
+
+        public async Task<int> GetRuleIdByLessonId(int lessonId)
+        {
+            await _connection.Init();
+
+            var foundLessonId = (await _connection.Database
+                .Table<LessonRuleModel>()
+                .Where(lr => lr.LessonId.Equals(lessonId))
+                .FirstOrDefaultAsync())
+                .RuleId;
+
+            return foundLessonId;
+                
+        }
+
     }
 }

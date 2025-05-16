@@ -1,7 +1,9 @@
 ﻿using ChiLearn.Abstractions;
 using ChiLearn.Models;
+using ChiLearn.Services;
 using Core.Domain.Abstractions.Sevices;
 using Core.Domain.Entity;
+using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -10,6 +12,8 @@ namespace ChiLearn.ViewModel.Lessons
 {
     public partial class LessonPageViewModel : BaseNotifyObject
     {
+        public Action<Lesson> ScrollToLessonAction { get; set; }
+
         private readonly ILessonService _lessonService;
         private List<Lesson> _lessons = new List<Lesson>();
         private bool _isLoading;
@@ -59,13 +63,13 @@ namespace ChiLearn.ViewModel.Lessons
         {
             IsLoading = true;
             try
-            {
+            {                
                 Lessons = await _lessonService.GetAllLessons();
                 var updatedLessons = ApplyLessonAvailability(Lessons);
                 var groupedLessons = updatedLessons
                     .OrderBy(g => g.HskLevel)
-                    .ThenBy(l => l.LessonNum)  // Используем ThenBy вместо второго OrderBy
-                    .GroupBy(l => l.HskLevel);
+                    .ThenBy(l => l.LessonNum) 
+                    .GroupBy(l => l.HskLevel);                
 
                 GroupedLessons.Clear();
                 foreach (var lesson in groupedLessons)
@@ -79,9 +83,15 @@ namespace ChiLearn.ViewModel.Lessons
             }
             finally
             {
+                var userData = await UserDataService.LoadAsync();
+                if (userData != null)
+                {
+
+                    ScrollToLessonAction?.Invoke(Lessons.FirstOrDefault(l => l.LessonNum.Equals(userData.LastLevelNum)));
+                }
                 IsLoading = false;
             }
-        }
+        }        
 
         private async void OnHskLevelSelected()
         {
@@ -89,7 +99,7 @@ namespace ChiLearn.ViewModel.Lessons
             {
                 await LoadLessonsAsync();
             }
-        }
+        }        
 
         private async Task NavigateToDetailPage(Lesson lesson)
         {

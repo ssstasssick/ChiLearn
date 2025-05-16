@@ -70,5 +70,7 @@ namespace Infrastructure.Persistence.Sqlite.Repositories
 
             return domeinLessons;
         }
+
+
     }
 }

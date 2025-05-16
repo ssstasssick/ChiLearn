@@ -26,24 +26,27 @@
             </Frame>
 
             <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
-                <Button Text="▶️ Воспроизвести"
+                <Button Text="🎧 Воспроизвести"
                         Command="{Binding PlayAudioCommand}"
-                        BackgroundColor="#3B82F6"
+                        BackgroundColor="#72cbfc"
                         TextColor="White"
+                        FontSize="20"
                         CornerRadius="10"
-                        Padding="15,10" />
+                        Padding="10,10" />
             </HorizontalStackLayout>
 
-            <Button Text="🎤 Говори"
+            <Button Text="🎙️"
+                    FontSize="110"
                     Pressed="OnRecordPressed"
                     Released="OnRecordReleased"
-                    BackgroundColor="#EF4444"
+                    BackgroundColor="#3B82F6"
                     TextColor="White"
                     FontAttributes="Bold"
-                    CornerRadius="50"
-                    Padding="20"
+                    CornerRadius="100"
                     HorizontalOptions="Center"
-                    WidthRequest="200" />
+                    VerticalOptions="Center"
+                    HeightRequest="200"
+                    WidthRequest="200"/>
 
             <!-- Прогресс перехода на следующее слово -->
             <Label Text="{Binding Status}"

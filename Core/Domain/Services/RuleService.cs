@@ -14,12 +14,18 @@ namespace Core.Domain.Services
     {
         private readonly IRuleRepository _ruleRepository;
         private readonly IGrammarBlockRepository _grammarBlockRepository;
+        private readonly ILessonRuleRepository _lessonRuleRepository;
+        private readonly ILessonRepository _lessonRepository;
         public RuleService(
             IRuleRepository ruleRepository,
-            IGrammarBlockRepository grammarBlockRepository)
+            IGrammarBlockRepository grammarBlockRepository,
+            ILessonRuleRepository lessonRuleRepository,
+            ILessonRepository lessonRepository)
         {
             _ruleRepository = ruleRepository;
             _grammarBlockRepository = grammarBlockRepository;
+            _lessonRuleRepository = lessonRuleRepository;
+            _lessonRepository = lessonRepository;
         }
         public async Task<Rule> GetRuleById(int id)
         {
@@ -29,14 +35,40 @@ namespace Core.Domain.Services
             return rule;
         }
 
+
+
         public Task<List<Rule>> GetRules()
         {
             return _ruleRepository.GetRules();
         }
 
-        public Task<Rule> GetRulesByLevel(int levelId)
+        public async Task<Rule> GetRuleByLevel(int lessonId)
         {
-            throw new NotImplementedException();
+            var rule = await _ruleRepository.GetById(await _lessonRuleRepository.GetRuleIdByLessonId(lessonId));
+            rule.Content = await _grammarBlockRepository.GetByRuleId(rule.Id);
+
+            return rule;
+        }
+
+        public async Task<List<Rule>> GetLearnedRules()
+        {
+            var completedLessonsIds = (await _lessonRepository.GetAll())
+                .Where(l => l.CompletedPractice == true)
+                .Select(l => l.LessonId)
+                .ToList();
+
+            var learnedRules = new List<Rule>();
+
+            foreach (var lessonId in completedLessonsIds)
+            {
+                var ruleId = await _lessonRuleRepository.GetRuleIdByLessonId(lessonId);
+                var rule = await _ruleRepository.GetById(ruleId);
+                rule.Content = await _grammarBlockRepository.GetByRuleId(rule.Id);
+                if (rule != null)
+                    learnedRules.Add(rule);
+            }
+
+            return learnedRules;
         }
     }
 }

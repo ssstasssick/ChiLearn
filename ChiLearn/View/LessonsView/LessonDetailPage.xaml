@@ -16,7 +16,15 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Кнопка "Изучить правило" -->
+            <Button Text="🔍 Изучить правило"
+                    Command="{Binding NavagateToRuleCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    HeightRequest="55"
+                    CornerRadius="12"
+                    FontAttributes="Bold">
+            </Button>
+
             <Button Text="📘 Изучить слова"
                     Command="{Binding NavigateToTheoryCommand}"
                     BackgroundColor="{StaticResource Primary}"

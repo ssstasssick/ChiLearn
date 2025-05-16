@@ -16,7 +16,7 @@ namespace Infrastructure.Persistence.Sqlite.Configuration
         public static readonly Dictionary<int, string> HskCsvFileName = new()
         {
             [1] = "Hsk-1-Csv.csv",
-            //[2] = "Hsk-2-CSV",
+            [2] = "Hsk-2-Csv.csv",
             //[3] = "Hsk-3-CSV",
 
         };
